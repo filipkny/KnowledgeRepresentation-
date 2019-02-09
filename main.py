@@ -30,6 +30,9 @@ class SAT():
             "column" : 0
         }
         self.truth_values = defaultdict(lambda : False)
+        for assignment in board:
+            self.truth_values[str(assignment[0])] = True
+
         self.ground_truth_cnf = []
 
     def get_constraints(self, assignment, type):
@@ -88,18 +91,22 @@ class SAT():
         self.set_unit_clause()
         print("Length after removing unit clauses {}".format(len(self.ground_truth_cnf)))
 
-        self.ground_truth_cnf, self.truth_values = self.update_cnf(self.truth_values, self.ground_truth_cnf)
-        print("Length after updating cnf {}".format(len(self.ground_truth_cnf)))
+        old_len = len(self.ground_truth_cnf)
+        new_len = len(self.ground_truth_cnf) +1
+        while old_len != new_len:
+            self.ground_truth_cnf, self.truth_values = self.update_cnf(self.truth_values, self.ground_truth_cnf)
+            print("Length after updating cnf {}".format(len(self.ground_truth_cnf)))
+            old_len = new_len
+            new_len = len(self.ground_truth_cnf)
 
-
-        # Split 
-        split_choice = self.split()
-
-        temp_truth_vals = copy.copy(self.truth_values)
-        temp_truth_vals[split_choice] = True
-        temp_cnf = copy.copy(self.ground_truth_cnf)
-        new_cnf, new_truth_values = self.update_cnf(temp_truth_vals, temp_cnf)
-        print("Length after updating cnf {}".format(len(temp_cnf)))
+        # # Split
+        # split_choice = self.split()
+        #
+        # temp_truth_vals = copy.copy(self.truth_values)
+        # temp_truth_vals[split_choice] = True
+        # temp_cnf = copy.copy(self.ground_truth_cnf)
+        # new_cnf, new_truth_values = self.update_cnf(temp_truth_vals, temp_cnf)
+        # print("Length after updating cnf {}".format(len(temp_cnf)))
 
     def set_unit_clause(self):
         unit_clauses = [clause for clause in self.ground_truth_cnf if len(clause) == 1]
@@ -115,14 +122,14 @@ class SAT():
         for assignment, value in truth_values.items():
             if value:
                 for clause in cnf:
-                    for element in clause:
-                        target = "-" + assignment
-                        if target in element:
-                            other = copy.copy(clause)
-                            other.remove(target)
-                            proposition = other[0]
-                            temp_dict[proposition] = True
-                            clauses_to_remove.append(clause)
+                    if len(clause) == 2:
+                        for element in clause:
+                            if assignment in element:
+                                other = copy.copy(clause)
+                                other = [ x for x in other if assignment not in x ]
+                                proposition = other[0]
+                                temp_dict[proposition] = True
+                                clauses_to_remove.append(clause)
 
         truth_values = {**truth_values, **temp_dict}
         cnf = self.remove_clauses(clauses_to_remove, cnf)
@@ -131,7 +138,10 @@ class SAT():
 
     def remove_clauses(self,clauses, cnf):
         for clause in clauses:
-            cnf.remove(clause)
+            try:
+                cnf.remove(clause)
+            except ValueError:
+                continue
 
         return cnf
 
@@ -139,7 +149,6 @@ class SAT():
         all_assigments = [item for sublist in self.ground_truth_cnf for item in sublist]
         choice = random.choice(all_assigments)
         choice = choice.replace("-","")
-        print(choice)
         return choice
 
 
