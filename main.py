@@ -2,16 +2,16 @@ import copy
 import math
 from collections import defaultdict
 import random
+import itertools
+
 
 def read_file(file):
     with open(file, 'r') as f:
         lines = f.readlines()
 
+        # Remove '\n', zeroes, last char and make a list out of it
         for i in range(len(lines)):
-            lines[i] = lines[i].rstrip()
-            lines[i] = lines[i].replace("0","")
-            lines[i] = lines[i][0:-1]
-            lines[i] = lines[i].split(" ")
+            lines[i] = lines[i].rstrip().replace("0","")[0:-1].split(" ")
 
     return lines
 
@@ -19,17 +19,20 @@ def read_file(file):
 example = read_file("sudoku-example.txt")
 rules = read_file("sudoku-rules.txt")
 
+print(example)
+print(rules)
+
 class SAT():
-    def __init__(self,board,rules,size = 4):
+    def __init__(self,board,rules,size = 9):
         self.board = board
         self.rules = rules
         self.size = size
-        self.index_dict = {
+        self.change_index_dict = {
             "square" : 2,
             "row" : 1,
             "column" : 0
         }
-        self.truth_values = defaultdict(lambda : False)
+        self.truth_values = defaultdict(lambda : None)
         for assignment in board:
             self.truth_values[str(assignment[0])] = True
 
@@ -40,32 +43,35 @@ class SAT():
             return self.get_box_constraint(assignment)
 
         result = []
-        index = self.index_dict[type]
-        split_assignment = list(assignment)
-        value, pos = self.split_on_index(split_assignment, index)
 
+        # Select which index to change (eg. 111, index 0 -> 211,311,411...)
+        change_index = self.change_index_dict[type]
+
+        # Split the assignment on the selected index
+        change, keep= self.split_on_index(list(assignment), change_index)
+
+        # Possible values of change index are all integers between 1 and size of the board, besides the current value
         possible_values = list(range(1,self.size+1))
-        possible_values.remove(value)
+        possible_values.remove(change)
 
+        # Go over all possible values and insert them in the right location. Append results
         for possible_value in possible_values:
-            implication = copy.copy(pos)
-            implication.insert(index, str(possible_value))
-            result.append("-"+ "".join(implication))
+            implication = copy.copy(keep)
+            implication.insert(change_index, str(possible_value))
+            result.append("-" + "".join(implication))
 
         return result
 
     def get_box_constraint(self, assignment):
         result = []
-        split_assignment = list(assignment)
-        constant = split_assignment[-1]
-        first_possible_values = list(range(1, int(math.sqrt(self.size)) + 1))
-        second_possible_values = list(range(1, int(math.sqrt(self.size)) + 1))
+        constant = list(assignment)[-1]
 
-        import itertools
-        combos = list(itertools.product(first_possible_values, second_possible_values))
-        for combo in combos:
+        possible_values = list(range(1, int(math.sqrt(self.size)) + 1))
+
+        all_combos = list(itertools.product(possible_values, possible_values))
+
+        for combo in all_combos:
             implication = [str(combo[0]),str(combo[1])] + [str(constant)]
-            print(implication)
             result.append("-" + "".join(implication))
 
         return result
@@ -108,8 +114,12 @@ class SAT():
         # new_cnf, new_truth_values = self.update_cnf(temp_truth_vals, temp_cnf)
         # print("Length after updating cnf {}".format(len(temp_cnf)))
 
+
     def set_unit_clause(self):
+        # Find all unit clauses
         unit_clauses = [clause for clause in self.ground_truth_cnf if len(clause) == 1]
+
+        # Set each unit clause values to True
         for clause in unit_clauses:
             proposition = clause[0]
             self.truth_values[proposition] = True
@@ -117,22 +127,26 @@ class SAT():
         self.remove_clauses(unit_clauses, self.ground_truth_cnf)
 
     def update_cnf(self, truth_values, cnf):
-        temp_dict = defaultdict(lambda : False)
-        clauses_to_remove = []
-        for assignment, value in truth_values.items():
-            if value:
-                for clause in cnf:
-                    if len(clause) == 2:
-                        for element in clause:
-                            if assignment in element:
-                                other = copy.copy(clause)
-                                other = [ x for x in other if assignment not in x ]
-                                proposition = other[0]
-                                temp_dict[proposition] = True
-                                clauses_to_remove.append(clause)
+        temp_dict = defaultdict(lambda : None)
 
-        truth_values = {**truth_values, **temp_dict}
-        cnf = self.remove_clauses(clauses_to_remove, cnf)
+        clauses_to_remove = []
+
+
+        for assignment, value in truth_values.items():      # For all truth values
+            if value:                                       # If the value is true
+                for clause in cnf:                          # For every clause in the cnf
+                    if len(clause) == 2:                    # If the clause has length 2
+                        for literal in clause:              # Go over each literal of the clause
+                            if assignment in literal:       # If the literal is the same as the truth assignment
+
+                                other_literal = copy.copy(clause)
+                                other_literal = [ x for x in other_literal if assignment not in x ] # Get the other literal
+                                proposition = other_literal[0] # Get it out of the list
+                                temp_dict[proposition] = True  # Set the value of this literal to true
+                                clauses_to_remove.append(clause) # Put it in the list of clauses to remove
+
+        truth_values = {**truth_values, **temp_dict} # Join the old truth value dictionary with the new one
+        cnf = self.remove_clauses(clauses_to_remove, cnf) # Remove the clauses from the current cnf
 
         return cnf,truth_values
 
@@ -153,7 +167,5 @@ class SAT():
 
 
 sat = SAT(example, rules)
-# test = "111"
-# print("For assignment : " + test)
-# print(sat.get_constraints(test,"box"))
-sat.join_cnf()
+# sat.join_cnf()
+print(sat.get_constraints('111','row'))
