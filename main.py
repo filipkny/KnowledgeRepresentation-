@@ -19,9 +19,6 @@ def read_file(file):
 example = read_file("sudoku-example.txt")
 rules = read_file("sudoku-rules.txt")
 
-print(example)
-print(rules)
-
 class SAT():
     def __init__(self,board,rules,size = 9):
         self.board = board
@@ -34,7 +31,7 @@ class SAT():
         }
         self.truth_values = defaultdict(lambda : None)
         for assignment in board:
-            self.truth_values[str(assignment[0])] = True
+            self.truth_values[str(assignment[0]).replace("-","")] = True
 
         self.ground_truth_cnf = []
 
@@ -66,10 +63,13 @@ class SAT():
         result = []
         constant = list(assignment)[-1]
 
+        # Possible values of change index are all integers between 1 and size of the board
         possible_values = list(range(1, int(math.sqrt(self.size)) + 1))
 
+        # Mix possible values into all combos
         all_combos = list(itertools.product(possible_values, possible_values))
 
+        # Append all results
         for combo in all_combos:
             implication = [str(combo[0]),str(combo[1])] + [str(constant)]
             result.append("-" + "".join(implication))
@@ -84,28 +84,37 @@ class SAT():
         return int(change), keep
 
     def init_ground_truth_cnf(self):
+        '''
+        Initializes the ground truth cnf by joining the game rules and the current board
+        :return:
+        '''
         self.ground_truth_cnf = copy.copy(self.rules)
-        print("Length of board rules: {}".format(len(self.ground_truth_cnf)))
+        self.print_status("Length of board rules: ")
 
         self.ground_truth_cnf.extend(self.board)
-        self.ground_truth_cnf.pop(0)
-        print("Length of board rules + rules: {}".format(len(self.ground_truth_cnf)))
+        self.ground_truth_cnf.pop(0) # Remove the first line of rules which has no rules in it
+        self.print_status("Length of board rules + rules: ")
+
 
     def join_cnf(self):
+
+        # Initalize the ground truth cnf
         self.init_ground_truth_cnf()
 
+        # Find the unit clauses, set them to true and remove them from CNF
         self.set_unit_clause()
-        print("Length after removing unit clauses {}".format(len(self.ground_truth_cnf)))
 
         old_len = len(self.ground_truth_cnf)
         new_len = len(self.ground_truth_cnf) +1
+
+        # Update CNF by looking at current truth values and deriving implications
         while old_len != new_len:
             self.ground_truth_cnf, self.truth_values = self.update_cnf(self.truth_values, self.ground_truth_cnf)
-            print("Length after updating cnf {}".format(len(self.ground_truth_cnf)))
+            self.print_status("Length after updating cnf")
             old_len = new_len
             new_len = len(self.ground_truth_cnf)
 
-        # # Split
+        # Split
         # split_choice = self.split()
         #
         # temp_truth_vals = copy.copy(self.truth_values)
@@ -127,23 +136,23 @@ class SAT():
         self.remove_clauses(unit_clauses, self.ground_truth_cnf)
 
     def update_cnf(self, truth_values, cnf):
+        # Temporary dictionary since we cant modify the truth values while iterating over them
         temp_dict = defaultdict(lambda : None)
 
         clauses_to_remove = []
-
-
         for assignment, value in truth_values.items():      # For all truth values
             if value:                                       # If the value is true
                 for clause in cnf:                          # For every clause in the cnf
                     if len(clause) == 2:                    # If the clause has length 2
                         for literal in clause:              # Go over each literal of the clause
                             if assignment in literal:       # If the literal is the same as the truth assignment
-
                                 other_literal = copy.copy(clause)
-                                other_literal = [ x for x in other_literal if assignment not in x ] # Get the other literal
-                                proposition = other_literal[0] # Get it out of the list
-                                temp_dict[proposition] = True  # Set the value of this literal to true
-                                clauses_to_remove.append(clause) # Put it in the list of clauses to remove
+                                other_literal = [x for x in other_literal if assignment not in x] # Get the other literal
+                                proposition = other_literal[0]          # Get it out of the list
+                                if "-" in proposition:                  # If the other literal is negated
+                                    temp_dict[proposition] = True       # Set it true
+
+                                clauses_to_remove.append(clause)    # Put it in the list of clauses to remove regardless
 
         truth_values = {**truth_values, **temp_dict} # Join the old truth value dictionary with the new one
         cnf = self.remove_clauses(clauses_to_remove, cnf) # Remove the clauses from the current cnf
@@ -151,6 +160,9 @@ class SAT():
         return cnf,truth_values
 
     def remove_clauses(self,clauses, cnf):
+        '''
+        Removes the given clauses from the cnf
+        '''
         for clause in clauses:
             try:
                 cnf.remove(clause)
@@ -165,7 +177,9 @@ class SAT():
         choice = choice.replace("-","")
         return choice
 
+    def print_status(self, message):
+        print("{} {}".format(message,len(self.ground_truth_cnf)))
 
 sat = SAT(example, rules)
-# sat.join_cnf()
-print(sat.get_constraints('111','row'))
+sat.join_cnf()
+print(sat.truth_values)
