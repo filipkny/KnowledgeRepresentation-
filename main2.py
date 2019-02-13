@@ -25,7 +25,7 @@ if rules[0][0]=='p':
 def rules2dict(rules, str):
     """
     Let A,B and C are the list of rules. Then:
-    [[A , B , C] , [D]] = [{A , B , C} , {D}] = [{A or B or C} and {D}]
+    [[A , B , C] , [D]] = [{A , B , C} , {D}] = {{A or B or C} and {D}}
     where A has the value of the 'str': A = 'str', str = '0', '1', '?'
     """
     clauses = {}
@@ -97,37 +97,51 @@ def split(rules, truth_values):
     while condition == False:
         rand_idx = random.choice([*rules.keys()])
         rand_clause = rules[rand_idx]
-
         keys = [*rand_clause.keys()]
         values = [*rand_clause.values()]
-
-        # print(values)
         if '?' in values:
             statement = keys[values.index('?')]
-            truth_values.add(statement)
-            condition = True
+            if statement>0:
+                truth_values.add(statement)
+                condition = True
+            else:
+                truth_values.add(-statement)
+                condition = True
     return truth_values
 
 print(len(rules))
 
-rules = fill_values(rules, truth_values)
-rules, truth_values = simplicity(rules, truth_values)
+old_len = len(rules)
+condition = False
+i=1
+while condition == False:
+    rules = fill_values(rules, truth_values)
+    rules, truth_values = simplicity(rules, truth_values)
+    new_len = len(rules)
+    print(new_len)
+    if new_len - old_len == 0:
+        truth_values = split(rules, truth_values)
+    else:
+        old_len = new_len
+    if new_len < 100:
+        break
+    # if i==3:
+    #     for idx, clause in rules.items():
+    #         print([*clause.values()])
+    # i+=1
+#
+# for idx, clause in rules.items():
+#     print([*clause.values()])
+# print(len(rules))
+#
+# rules = fill_values(rules, truth_values)
+# rules, truth_values = simplicity(rules, truth_values)
+#
+# print(len(rules))
+# #
+# # for idx, clause in rules.items():
+# #     print([*clause.values()])
+#
+# truth_values = split(rules, truth_values)
 
-print(len(rules))
 
-rules = fill_values(rules, truth_values)
-rules, truth_values = simplicity(rules, truth_values)
-
-print(len(rules))
-
-truth_values = split(rules, truth_values)
-
-rules = fill_values(rules, truth_values)
-rules, truth_values = simplicity(rules, truth_values)
-
-print(len(rules))
-
-rules = fill_values(rules, truth_values)
-rules, truth_values = simplicity(rules, truth_values)
-
-print(len(rules))
