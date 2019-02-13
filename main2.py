@@ -28,109 +28,106 @@ def rules2dict(rules, str):
     [[A , B , C] , [D]] = [{A , B , C} , {D}] = [{A or B or C} and {D}]
     where A has the value of the 'str': A = 'str', str = '0', '1', '?'
     """
-    conjuctions = []
+    clauses = {}
     disjunction = {}
-    for conjuction in rules:
-        for rule in conjuction:
-            disjunction[rule] = str
-        conjuctions.append(disjunction)
+    for idx, clause in enumerate(rules):
+        for rule in clause:
+            disjunction[int(rule)] = str #int make them integers
+        clauses[idx] = disjunction
         disjunction = dict()
-    return conjuctions
+    return clauses
 
 # we will assing every rule with '?' because we do not know if it is True or False
 rules = rules2dict(rules, '?')
 
 # and every element of the example is True, so we will make a new list 'truth_values',
 # that contains only true values
-truth_values = example
+truth_values = set()
+for value in example:
+    truth_values.add(int(value[0]))
 
-# Step 1: Assing 1 and 0 to the elements of rules that are in the truth_values
+# # Step 1: Assing 1 and 0 to the elements of rules that are in the truth_values
 def fill_values(rules, truth_values):
-    ''''
-    Fill in the rule dictionary with values: '?' -> '0' or '1'
-    '''
-    for idx, clause in enumerate(rules):            # for every clause of the rules
-        for rule in truth_values:                   # for every true rule in truth_values
-            temp_rule = (rule[0] + '.')[:-1]        # copy of the ground-truth rule
-
-            if str('-') in temp_rule:               # check if it is a 'no rule'
-
-                if temp_rule in [*clause.keys()]:   # if this ground-truth rule (temp_rule) appears in the clause
-                    rules[idx][temp_rule] = '1'     # assing it to '1', True
-
-                temp_not_rule = temp_rule.translate({ord("-"): None}) # get rid of this '-' to check for the opposite
-                if temp_not_rule in [*clause.keys()]:
-                    rules[idx][temp_not_rule] = '0'
-            else:                                   # if the rule is without '-'
-                if temp_rule in [*clause.keys()]:
-                    rules[idx][temp_rule] = '1'
-
-                temp_not_rule = ('-'+temp_rule )
-                if temp_not_rule in [*clause.keys()]:
-                    rules[idx][temp_not_rule] = '0'
+    for idx, clause in rules.items():
+        for statement in truth_values:
+                if statement in [*clause.keys()]:
+                    rules[idx][statement] = '1'
+                elif -statement in [*clause.keys()]:
+                    rules[idx][-statement] = '0'
     return rules
+
 
 # Step 2: Simplicity fanction
 def simplicity(rules, truth_values):
-    '''
-    Performs the Simplicity rules
-    :return: updated rules, current_rules and truth_vailus
-    '''
-    for clause in rules:
+    rules_copy = rules.copy()
+    for idx, clause in rules.items():
         keys = [*clause.keys()]
         values = [*clause.values()]
         ones = values.count('1')
         zeros = values.count('0')
         unknowns = values.count('?')
 
-        if len(clause) == 1 and unknowns==1 :   # if it is a unit clause
-            clause[keys[0]] = '1'               # make it true and
-            truth_values.append([keys[0]])      # append it to the truth values
-            rules.remove(clause)                # remove the clause
-
-        elif ones>0:                            # if the clause has a least one true value
-            rules.remove(clause)                # it makes the hole clause true, so remove it
+        if ones>0:
+            del rules_copy[idx]
 
         elif len(clause) == 2 and unknowns == 1:
-            if zeros>0:                                 # if the clause is in the form (not true or ?)
-                clause[keys[values.index('?')]] = '1'   # make '?' -> true
-                truth_values.append([keys[values.index('?')]])
-                rules.remove(clause)
+            if zeros>0:
+                statement = keys[values.index('?')]
+                rules_copy[idx][statement] = '1'
+                truth_values.add(statement)
+                del rules_copy[idx]
             else:
-                rules.remove(clause)
+                del rules_copy[idx]
+
+        elif len(clause) == 1 and unknowns==1 :
+            statement = keys[0]
+            rules_copy[idx][statement] = '1'
+            truth_values.add(statement)
+            del rules_copy[idx]
 
         elif len(clause) == zeros-1:        # captures the form (false or false or ... or false or ?) -> ? must be true
-            clause[keys[values.index('?')]] = '1'
-            truth_values.append([keys[values.index('?')]])
-            rules.remove(clause)
-    return rules, truth_values
+            statement = keys[values.index('?')]
+            rules_copy[idx][statement] = '1'  # rules[idx][statement] = '1'
+            del rules_copy[idx]
+    return rules_copy, truth_values
 
-# ============================== Test it ====================================
-# rules = fill_values(rules, truth_values) # get the filled  rules
-#
-# print(len(rules))
-#
-# for clause in rules:        # print the filled up rules
-#     print([*clause.values()])
-#
-# rules, truth_values = simplicity(rules, truth_values) # simplify them
-#
-# print(len(rules))
+def split(rules, truth_values):
+    print('----- splitting -------')
+    condition = False
+    while condition == False:
+        rand_idx = random.choice([*rules.keys()])
+        rand_clause = rules[rand_idx]
 
-# ===========================================================================
+        keys = [*rand_clause.keys()]
+        values = [*rand_clause.values()]
 
-# ========================== The loop ==========================
-condition = False
-old_len = len(rules)
-while condition == False:
-    rules = fill_values(rules, truth_values)
-    rules, truth_values = simplicity(rules, truth_values)
-    new_len = len(rules)
-    print(new_len)
-    if old_len - new_len == 0:
-        condition = True
-    else:
-        old_len = new_len
-# ==============================================================
-# for clause in rules:        # print the filled up rules
-#     print([*clause.values()])
+        # print(values)
+        if '?' in values:
+            statement = keys[values.index('?')]
+            truth_values.add(statement)
+            condition = True
+    return truth_values
+
+print(len(rules))
+
+rules = fill_values(rules, truth_values)
+rules, truth_values = simplicity(rules, truth_values)
+
+print(len(rules))
+
+rules = fill_values(rules, truth_values)
+rules, truth_values = simplicity(rules, truth_values)
+
+print(len(rules))
+
+truth_values = split(rules, truth_values)
+
+rules = fill_values(rules, truth_values)
+rules, truth_values = simplicity(rules, truth_values)
+
+print(len(rules))
+
+rules = fill_values(rules, truth_values)
+rules, truth_values = simplicity(rules, truth_values)
+
+print(len(rules))
