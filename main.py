@@ -8,19 +8,17 @@ import itertools
 def read_file(file):
     with open(file, 'r') as f:
         lines = f.readlines()
-
         # Remove '\n', zeroes, last char and make a list out of it
         for i in range(len(lines)):
             lines[i] = lines[i].rstrip().replace("0","")[0:-1].split(" ")
-
     return lines
-
 
 example = read_file("sudoku-example.txt")
 rules = read_file("sudoku-rules.txt")
 
+
 class SAT():
-    def __init__(self,board,rules,size = 9):
+    def __init__(self, board, rules, size = 9):
         self.board = board
         self.rules = rules
         self.size = size
@@ -29,7 +27,10 @@ class SAT():
             "row" : 1,
             "column" : 0
         }
+        # dict of assinged truth values
         self.truth_values = defaultdict(lambda : None)
+
+        # fill the truth value dict with thouse of the game
         for assignment in board:
             self.truth_values[str(assignment[0]).replace("-","")] = True
 
@@ -179,6 +180,7 @@ class SAT():
 
     def print_status(self, message):
         print("{} {}".format(message,len(self.ground_truth_cnf)))
+
 
 sat = SAT(example, rules)
 sat.join_cnf()
