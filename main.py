@@ -218,6 +218,7 @@ def backtrack(literals_dict, truth_values, split_choice, neg_literal, rules_befo
                 literal_choice = split_choice[-i]
                 neg_literal[-i] = True
                 break
+
         # go back to the old rules
         rules = rules_before_split[literal_choice]
         literals_dict = literals_dict_before_split[literal_choice]
@@ -228,7 +229,8 @@ def backtrack(literals_dict, truth_values, split_choice, neg_literal, rules_befo
         truth_values.add(-literal_choice)
 
         # we have to remove all the literals that were produced by literal_choice
-        for j in range(len(neg_literal), -i, -1):
+        remove_idxs = split_choice.index(literal_choice)
+        for j in range(len(neg_literal), remove_idxs, -1):
             split_choice.pop(j)
             neg_literal.pop(j)
             del rules_before_split[split_choice[j]]
