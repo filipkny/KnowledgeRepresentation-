@@ -12,6 +12,20 @@ def print_sudoku(board):
         if i % 3 == 2:
             print("+" + "---+" * 9)
 
+def solution():
+    print("--- %s seconds ---" % (time.time() - start_time))
+    print('')
+    print('-------------- Solution -------------')
+    solutions = []
+    for solution in truth_values:
+        if solution > 0:
+            solutions.append(solution)
+    solution_grid = []
+    for i in range(0, 81, 9):
+        solution_grid.append(solutions[i:i + 9])
+    print_sudoku(solution_grid)
+    return True
+
 
 #### CREAT DATABASE FOR RULES
 def read_file(file):
@@ -82,7 +96,9 @@ rules, literals_dict = init_database(rules)
 
 
 ### Step 1: Simplify ###
-def simlify(rules, literals_dict, truth_values, split_choice, rules_before_split, literals_dict_before_split, truth_values_before_split):
+def simlify(rules, literals_dict, truth_values, split_choice, neg_literal, rules_before_split,
+        literals_dict_before_split, truth_values_before_split):
+
     rules_copy = copy.deepcopy(rules)
     literals_dict_copy = copy.deepcopy(literals_dict)
     new_truth_values = set()
@@ -105,9 +121,10 @@ def simlify(rules, literals_dict, truth_values, split_choice, rules_before_split
                     zeros = values.count('0')  # how many False literal there are at this clause
                     unknowns = values.count('?')  # how many Unknown literal there are at this clause
                     if len(clause) == zeros:  # it will make the hole think False
-                        print('FATALITY: BACKTRACK :/')
-                        rules, literals_dict, truth_values = backtrack(rules, literals_dict, truth_values,
-                                split_choice, rules_before_split, literals_dict_before_split, truth_values_before_split)
+                        print('------ BACKTRACK -----')
+                        rules, literals_dict, truth_values, neg_literal = \
+                            backtrack(literals_dict, truth_values, split_choice, neg_literal, rules_before_split,
+                                      literals_dict_before_split, truth_values_before_split)
                         back_track = True
                         continue
                     elif unknowns == 1:  # if we have (false or false or... or false or ?) => the ? must be true
@@ -115,10 +132,8 @@ def simlify(rules, literals_dict, truth_values, split_choice, rules_before_split
                         new_truth_values.add(statement)  ### truth_values HAVE BOTH NEGATIVE AND NON_NEGATIVE literals
                         if statement > 0:  # but because literals_dict has only non-negative, we have to check
                             literals_dict[statement][0] = '1'  # add it to the literals_dict
-                            literals_dict[statement][1].remove(i)  # remove position from literals_dict
                         else:
                             literals_dict[-statement][0] = '0'  # add it to the literals_dict
-                            literals_dict[-statement][1].remove(i)  # remove position from literals_dict
                         del rules[i]
 
                     elif len(clause) == 1 and unknowns == 1:  # unit clause
@@ -126,10 +141,8 @@ def simlify(rules, literals_dict, truth_values, split_choice, rules_before_split
                         new_truth_values.add(statement)
                         if statement > 0:
                             literals_dict[statement][0] = '1'  # add it to the literals_dict
-                            literals_dict[statement][1].remove(i)  # remove position from literals_dict
                         else:
                             literals_dict[-statement][0] = '0'  # add it to the literals_dict
-                            literals_dict[-statement][1].remove(i)  # remove position from literals_dict
                         del rules[i]
             except:
                 continue
@@ -142,59 +155,88 @@ def simlify(rules, literals_dict, truth_values, split_choice, rules_before_split
     return rules, literals_dict, truth_values  # , new_truth_values
 
 
-def split(rules, literals_dict, truth_values):
-    print('------- splitting -------')
+def split(rules, literals_dict, truth_values, split_choice, neg_literal):
+    print('------- SPLIT -------')
     condition = False
-    split_choice = set()
-    rules_before_split = copy.deepcopy(rules)
-    literals_dict_before_split = copy.deepcopy(literals_dict)
-    truth_values_before_split = copy.deepcopy(truth_values)
-
+    # find the literal randomly and assign it to true (it has to be non-negative: its quicker)
     while condition == False:
         rand_literal = random.choice([*literals_dict.keys()])  # random literal
         if literals_dict[rand_literal][0] == '?':
             condition = True
-            literals_dict[rand_literal][0] = '1'
-            truth_values.add(rand_literal)  # rand_literal will always be non-negative
-    split_choice.add(rand_literal)
-    return literals_dict, truth_values, split_choice, rules_before_split, literals_dict_before_split, truth_values_before_split
+            choosen_literal = rand_literal
+
+    # add it to the dict of split_choices; it is equal to all the changes in the literals that is will cause
+    split_choice.append(choosen_literal)
+    neg_literal.append(False)
+
+    # keep the rules, literals_dict and truth_values before the split
+    rules_before_split[choosen_literal] = copy.deepcopy(rules)
+    literals_dict_before_split[choosen_literal] = copy.deepcopy(literals_dict)
+    truth_values_before_split[choosen_literal] = copy.deepcopy(truth_values)
+
+    # update the literals_dict and truth_values with the new literal
+    literals_dict[choosen_literal][0] = '1'
+    truth_values.add(choosen_literal)  # rand_literal will always be non-negativ
+
+    return literals_dict, truth_values, split_choice, neg_literal, rules_before_split, \
+           literals_dict_before_split, truth_values_before_split
 
 
-def backtrack(rules, literals_dict, truth_values, split_choice, rules_before_split, literals_dict_before_split, truth_values_before_split):
-    rules = rules_before_split
-    literals_dict = literals_dict_before_split
-    truth_values = truth_values_before_split
-    split_choice.clear()
-    return rules, literals_dict, truth_values
+def backtrack(literals_dict, truth_values, split_choice, neg_literal, rules_before_split,
+           literals_dict_before_split, truth_values_before_split):
 
-rules_before_split, literals_dict_before_split = {}, {}
-truth_values_before_split = set()
-split_choice = set()
+    if neg_literal[-1] == False: # if we haven't tried to set it to '0'
+        # find literal
+        literal_choice = split_choice[-1]
+        neg_literal[-1] = True
+
+        # go back to the old rules of the literal
+        rules = rules_before_split[literal_choice]
+        literals_dict = literals_dict_before_split[literal_choice]
+        truth_values = truth_values_before_split[literal_choice]
+
+        # assign the literal with '0'
+        literals_dict[literal_choice][0] = '0'
+        truth_values.add(-literal_choice)
+    else: # if we tried to set it to '0', we have to go back
+        # try:
+        for i in range(neg_literal[-1], -1, -1):
+            if neg_literal[-i] == False:
+                literal_choice = split_choice[-i]
+                neg_literal[-i] = True
+                break
+        # go back to the old rules
+        rules = rules_before_split[literal_choice]
+        literals_dict = literals_dict_before_split[literal_choice]
+        truth_values = truth_values_before_split[literal_choice]
+
+        # assign the literal with '0'
+        literals_dict[literal_choice][0] = '0'
+        truth_values.add(-literal_choice)
+    return rules, literals_dict, truth_values, neg_literal
+
+
+split_choice, neg_literal = [], []
+rules_before_split, literals_dict_before_split, truth_values_before_split = {}, {}, {}
 
 print(len(rules))
 old_len = len(rules)
 new_truth_values = set()
 condit = False
 while condit == False:
-    rules, literals_dict, truth_values = simlify(rules, literals_dict, truth_values, split_choice, rules_before_split, literals_dict_before_split, truth_values_before_split )
+    rules, literals_dict, truth_values = \
+        simlify(rules, literals_dict, truth_values, split_choice, neg_literal, rules_before_split,
+        literals_dict_before_split, truth_values_before_split)
+
     new_len = len(rules)
     print(len(rules))
     if new_len == 0:
-        print("--- %s seconds ---" % (time.time() - start_time))
-        print('')
-        print('-------------- Solution -------------')
-        solutions = []
-        for solution in truth_values:
-            if solution > 0:
-                solutions.append(solution)
-        solution_grid = []
-        for i in range(0, 81, 9):
-            solution_grid.append(solutions[i:i + 9])
-        print_sudoku(solution_grid)
-        condit = True
+        condit = solution()
+
     elif old_len - new_len == 0:
-        literals_dict, truth_values, split_choice, rules_before_split, literals_dict_before_split, truth_values_before_split = split(rules, literals_dict, truth_values)
+
+        literals_dict, truth_values, split_choice, neg_literal, rules_before_split, \
+        literals_dict_before_split, truth_values_before_split = \
+            split(rules, literals_dict, truth_values, split_choice, neg_literal)
     else:
         old_len = new_len
-
-
