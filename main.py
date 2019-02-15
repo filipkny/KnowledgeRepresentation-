@@ -1,187 +1,200 @@
-import copy
-import math
-from collections import defaultdict
 import random
-import itertools
+import copy
+import time
 
+start_time = time.time()
+
+
+def print_sudoku(board):
+    print("+" + "---+" * 9)
+    for i, row in enumerate(board):
+        print(("|" + " {}   {}   {} |" * 3).format(*[x % 10 if x != 0 else " " for x in row]))
+        if i % 3 == 2:
+            print("+" + "---+" * 9)
+
+
+#### CREAT DATABASE FOR RULES
 def read_file(file):
     with open(file, 'r') as f:
         lines = f.readlines()
         # Remove '\n', zeroes, last char and make a list out of it
         for i in range(len(lines)):
-            lines[i] = lines[i].rstrip().replace("literal","")[0:-1].split(" ")
+            lines[i] = lines[i].rstrip().replace("0", "")[0:-1].split(" ")
     return lines
 
-example = read_file("sudoku-example.txt")
-rules = read_file("sudoku-rules.txt")
 
+def init_database(rules):
+    """
+    :return:
+    rules_dict: {0: {-111: '?', -112: '?'}, 1: {-111: '?', -113: '?'}}
+    it has every clause with unic index and the literals with their assignment: '?', '0' or '1'
 
-class SAT():
-    def __init__(self, board, rules, size = 9):
-        self.board = board
-        self.rules = rules
-        self.size = size
-        self.change_index_dict = {
-            "square" : 2,
-            "row" : 1,
-            "column" : 0
-        }
-        # dict of assinged truth values
-        self.truth_values = defaultdict(lambda : None)
-
-        # fill the truth value dict with thouse of the game
-        for assignment in board:
-            self.truth_values[str(assignment[0]).replace("-","")] = True
-
-        self.ground_truth_cnf = []
-
-    def get_constraints(self, assignment, type):
-        if type == "box":
-            return self.get_box_constraint(assignment)
-
-        result = []
-
-        # Select which index to change (eg. 111, index 0 -> 211,311,411...)
-        change_index = self.change_index_dict[type]
-
-        # Split the assignment on the selected index
-        change, keep= self.split_on_index(list(assignment), change_index)
-
-        # Possible values of change index are all integers between 1 and size of the board, besides the current value
-        possible_values = list(range(1,self.size+1))
-        possible_values.remove(change)
-
-        # Go over all possible values and insert them in the right location. Append results
-        for possible_value in possible_values:
-            implication = copy.copy(keep)
-            implication.insert(change_index, str(possible_value))
-            result.append("-" + "".join(implication))
-
-        return result
-
-    def get_box_constraint(self, assignment):
-        result = []
-        constant = list(assignment)[-1]
-
-        # Possible values of change index are all integers between 1 and size of the board
-        possible_values = list(range(1, int(math.sqrt(self.size)) + 1))
-
-        # Mix possible values into all combos
-        all_combos = list(itertools.product(possible_values, possible_values))
-
-        # Append all results
-        for combo in all_combos:
-            implication = [str(combo[0]),str(combo[1])] + [str(constant)]
-            result.append("-" + "".join(implication))
-
-        return result
-
-    def split_on_index(self, assigment, index):
-        change = assigment[index]
-        keep = copy.copy(assigment)
-        keep.remove(change)
-
-        return int(change), keep
-
-    def init_ground_truth_cnf(self):
-        '''
-        Initializes the ground truth cnf by joining the game rules and the current board
-        :return:
-        '''
-        self.ground_truth_cnf = copy.copy(self.rules)
-        self.print_status("Length of board rules: ")
-
-        self.ground_truth_cnf.extend(self.board)
-        self.ground_truth_cnf.pop(0) # Remove the first line of rules which has no rules in it
-        self.print_status("Length of board rules + rules: ")
-
-
-    def join_cnf(self):
-
-        # Initalize the ground truth cnf
-        self.init_ground_truth_cnf()
-
-        # Find the unit clauses, set them to true and remove them from CNF
-        self.set_unit_clause()
-
-        old_len = len(self.ground_truth_cnf)
-        new_len = len(self.ground_truth_cnf) +1
-
-        # Update CNF by looking at current truth values and deriving implications
-        while old_len != new_len:
-            self.ground_truth_cnf, self.truth_values = self.update_cnf(self.truth_values, self.ground_truth_cnf)
-            self.print_status("Length after updating cnf")
-            old_len = new_len
-            new_len = len(self.ground_truth_cnf)
-
-        # Split
-        # split_choice = self.split()
-        #
-        # temp_truth_vals = copy.copy(self.truth_values)
-        # temp_truth_vals[split_choice] = True
-        # temp_cnf = copy.copy(self.ground_truth_cnf)
-        # new_cnf, new_truth_values = self.update_cnf(temp_truth_vals, temp_cnf)
-        # print("Length after updating cnf {}".format(len(temp_cnf)))
-
-
-    def set_unit_clause(self):
-        # Find all unit clauses
-        unit_clauses = [clause for clause in self.ground_truth_cnf if len(clause) == 1]
-
-        # Set each unit clause values to True
-        for clause in unit_clauses:
-            proposition = clause[0]
-            self.truth_values[proposition] = True
-
-        self.remove_clauses(unit_clauses, self.ground_truth_cnf)
-
-    def update_cnf(self, truth_values, cnf):
-        # Temporary dictionary since we cant modify the truth values while iterating over them
-        temp_dict = defaultdict(lambda : None)
-
-        clauses_to_remove = []
-        for assignment, value in truth_values.items():      # For all truth values
-            if value:                                       # If the value is true
-                for clause in cnf:                          # For every clause in the cnf
-                    if len(clause) == 2:                    # If the clause has length 2
-                        for literal in clause:              # Go over each literal of the clause
-                            if assignment in literal:       # If the literal is the same as the truth assignment
-                                other_literal = copy.copy(clause)
-                                other_literal = [x for x in other_literal if assignment not in x] # Get the other literal
-                                proposition = other_literal[0]          # Get it out of the list
-                                if "-" in proposition:                  # If the other literal is negated
-                                    temp_dict[proposition] = True       # Set it true
-
-                                clauses_to_remove.append(clause)    # Put it in the list of clauses to remove regardless
-
-        truth_values = {**truth_values, **temp_dict} # Join the old truth value dictionary with the new one
-        cnf = self.remove_clauses(clauses_to_remove, cnf) # Remove the clauses from the current cnf
-
-        return cnf,truth_values
-
-    def remove_clauses(self,clauses, cnf):
-        '''
-        Removes the given clauses from the cnf
-        '''
-        for clause in clauses:
+    literals_dict: {111: ['?', {0, 1, 6, ..., 8991}], , 112: ['?', {0, 1, 9, 10,...}]
+    it has ONLY non-negative literals (111 and -111 are the same). Motivation: find the position of both easy
+    followed by assignment and a set of their position on the rules
+    """
+    # pop the element with 'p' and 'cnf' values
+    if rules[0][0] == 'p':
+        rules.pop(0)
+        rules_dict, disjunction, literals_dict = {}, {}, {}
+    temp_set = set()
+    assign = '?'
+    for idx, clause in enumerate(rules):
+        for unknowns, literal in enumerate(clause):
+            temp_set = set()
+            literal = int(literal)
+            disjunction[literal] = assign
+            literal = abs(literal)  # get and the negative position
             try:
-                cnf.remove(clause)
-            except ValueError:
+                assign, temp_set = literals_dict[literal]
+                temp_set.add(idx)
+            except:
+                temp_set.add(idx)
+                literals_dict[literal] = [assign, temp_set]
+        # temp = [idx, unknowns+1]
+        # clauses[tuple(temp)] = disjunction
+        rules_dict[idx] = disjunction
+        disjunction = dict()
+    return rules_dict, literals_dict
+
+
+### CREAT DATABASE FOR SUDOKU
+def read_sudoku_DIMACS_file(file):
+    '''
+    :return: {225, 961, 419, -732, -828, ...}
+    Set of ground truth values
+    '''
+    truth_values = set()
+    with open(file, 'r') as f:
+        lines = f.readlines()
+        # Remove '\n', zeroes, last char and make a list out of it
+        for i in range(len(lines)):
+            lines[i] = lines[i].rstrip().replace("0", "")[0:-1].split(" ")
+            truth_values.add(int(lines[i][0]))
+    return truth_values
+
+
+### Get the values ###
+rules = read_file("sudoku-rules.txt")
+truth_values = read_sudoku_DIMACS_file("sudoku-example.txt")
+
+rules, literals_dict = init_database(rules)
+
+
+### Step 1: Simplify ###
+def simlify(rules, literals_dict, truth_values, split_choice, rules_before_split, literals_dict_before_split, truth_values_before_split):
+    rules_copy = copy.deepcopy(rules)
+    literals_dict_copy = copy.deepcopy(literals_dict)
+    new_truth_values = set()
+    back_track = False
+    for literal in truth_values:
+        if literal > 0:  # check if the literal is non-negative
+            literals_dict[literal][0] = '1'  # add it to the literals_dict
+        else:  # if literal = -111, add the -literal to the literals_dict (literals_dict has non-negative rules)
+            literals_dict[-literal][0] = '0'
+        positions = literals_dict_copy[abs(literal)][1]  # get its positions of the + and - literal of the rules
+        for i in positions:
+            try:  # try to see if the clause is there
+                clause = rules_copy[i]  # get the clause at position i
+                if literal in [*clause.keys()]:
+                    del rules[i]  # if the literal is True, the hole clause is true, so remove it
+                else:  # if the -literal is in the clause
+                    clause[-literal] = '0'  # because literal = True => -literal = True
+                    keys = [*clause.keys()]  # get the keys in a list
+                    values = [*clause.values()]  # get the values in a list
+                    zeros = values.count('0')  # how many False literal there are at this clause
+                    unknowns = values.count('?')  # how many Unknown literal there are at this clause
+                    if len(clause) == zeros:  # it will make the hole think False
+                        print('FATALITY: BACKTRACK :/')
+                        rules, literals_dict, truth_values = backtrack(rules, literals_dict, truth_values,
+                                split_choice, rules_before_split, literals_dict_before_split, truth_values_before_split)
+                        back_track = True
+                        continue
+                    elif unknowns == 1:  # if we have (false or false or... or false or ?) => the ? must be true
+                        statement = keys[values.index('?')]  # the literal who must be true
+                        new_truth_values.add(statement)  ### truth_values HAVE BOTH NEGATIVE AND NON_NEGATIVE literals
+                        if statement > 0:  # but because literals_dict has only non-negative, we have to check
+                            literals_dict[statement][0] = '1'  # add it to the literals_dict
+                            literals_dict[statement][1].remove(i)  # remove position from literals_dict
+                        else:
+                            literals_dict[-statement][0] = '0'  # add it to the literals_dict
+                            literals_dict[-statement][1].remove(i)  # remove position from literals_dict
+                        del rules[i]
+
+                    elif len(clause) == 1 and unknowns == 1:  # unit clause
+                        statement = keys[0]
+                        new_truth_values.add(statement)
+                        if statement > 0:
+                            literals_dict[statement][0] = '1'  # add it to the literals_dict
+                            literals_dict[statement][1].remove(i)  # remove position from literals_dict
+                        else:
+                            literals_dict[-statement][0] = '0'  # add it to the literals_dict
+                            literals_dict[-statement][1].remove(i)  # remove position from literals_dict
+                        del rules[i]
+            except:
                 continue
-
-        return cnf
-
-    def split(self, heuristic = "rand"):
-        all_assigments = [item for sublist in self.ground_truth_cnf for item in sublist]
-        choice = random.choice(all_assigments)
-        choice = choice.replace("-","")
-        return choice
-
-    def print_status(self, message):
-        print("{} {}".format(message,len(self.ground_truth_cnf)))
+            if back_track == True:
+                continue
+        if back_track == True:
+            continue
+    if back_track != True:
+        truth_values = truth_values.union(new_truth_values)  # join two sets
+    return rules, literals_dict, truth_values  # , new_truth_values
 
 
-sat = SAT(example, rules)
-sat.join_cnf()
-print(sat.truth_values)
+def split(rules, literals_dict, truth_values):
+    print('------- splitting -------')
+    condition = False
+    split_choice = set()
+    rules_before_split = copy.deepcopy(rules)
+    literals_dict_before_split = copy.deepcopy(literals_dict)
+    truth_values_before_split = copy.deepcopy(truth_values)
+
+    while condition == False:
+        rand_literal = random.choice([*literals_dict.keys()])  # random literal
+        if literals_dict[rand_literal][0] == '?':
+            condition = True
+            literals_dict[rand_literal][0] = '1'
+            truth_values.add(rand_literal)  # rand_literal will always be non-negative
+    split_choice.add(rand_literal)
+    return literals_dict, truth_values, split_choice, rules_before_split, literals_dict_before_split, truth_values_before_split
+
+
+def backtrack(rules, literals_dict, truth_values, split_choice, rules_before_split, literals_dict_before_split, truth_values_before_split):
+    rules = rules_before_split
+    literals_dict = literals_dict_before_split
+    truth_values = truth_values_before_split
+    split_choice.clear()
+    return rules, literals_dict, truth_values
+
+rules_before_split, literals_dict_before_split = {}, {}
+truth_values_before_split = set()
+split_choice = set()
+
+print(len(rules))
+old_len = len(rules)
+new_truth_values = set()
+condit = False
+while condit == False:
+    rules, literals_dict, truth_values = simlify(rules, literals_dict, truth_values, split_choice, rules_before_split, literals_dict_before_split, truth_values_before_split )
+    new_len = len(rules)
+    print(len(rules))
+    if new_len == 0:
+        print("--- %s seconds ---" % (time.time() - start_time))
+        print('')
+        print('-------------- Solution -------------')
+        solutions = []
+        for solution in truth_values:
+            if solution > 0:
+                solutions.append(solution)
+        solution_grid = []
+        for i in range(0, 81, 9):
+            solution_grid.append(solutions[i:i + 9])
+        print_sudoku(solution_grid)
+        condit = True
+    elif old_len - new_len == 0:
+        literals_dict, truth_values, split_choice, rules_before_split, literals_dict_before_split, truth_values_before_split = split(rules, literals_dict, truth_values)
+    else:
+        old_len = new_len
+
 

@@ -131,18 +131,27 @@ def simlify(rules, literals_dict, truth_values):
     return rules, literals_dict, truth_values  # , new_truth_values
 
 
-def split(literals_dict, truth_values):
+def split(rules, literals_dict, truth_values):
     print('------- splitting -------')
-
     condition = False
+    split_choice = set()
+    rules_before_split = copy.deepcopy(rules)
+    literals_dict_before_split = copy.deepcopy(literals_dict)
+    truth_values_before_split = copy.deepcopy(truth_values)
+
     while condition == False:
         rand_literal = random.choice([*literals_dict.keys()])  # random literal
         if literals_dict[rand_literal][0] == '?':
             condition = True
             literals_dict[rand_literal][0] = '1'
             truth_values.add(rand_literal)  # rand_literal will always be non-negative
-    return literals_dict, truth_values
+    split_choice.add(rand_literal)
+    return literals_dict, truth_values, split_choice, rules_before_split, literals_dict_before_split, truth_values_before_split
 
+
+def backtrack(rules, literals_dict, truth_values, choises_after_split):
+
+    return
 
 print(len(rules))
 old_len = len(rules)
@@ -150,12 +159,13 @@ new_truth_values = set()
 condit = False
 while condit == False:
     rules, literals_dict, truth_values = simlify(rules, literals_dict, truth_values)
-    print(len(rules))
     new_len = len(rules)
+    print(len(rules))
     if new_len == 0:
-        print('---------- Solutions ----------')
+        print("--- %s seconds ---" % (time.time() - start_time))
+        print('')
+        print('-------------- Solution -------------')
         solutions = []
-        i=0
         for solution in truth_values:
             if solution>0:
                 solutions.append(solution)
@@ -163,7 +173,6 @@ while condit == False:
         for i in range(0, 81, 9):
             solution_grid.append(solutions[i:i + 9])
         print_sudoku(solution_grid)
-        print('Solutions are #', i)
         condit = True
     elif old_len - new_len == 0:
         literals_dict, truth_values = split(literals_dict, truth_values)
@@ -171,4 +180,3 @@ while condit == False:
         old_len = new_len
 
 
-print("--- %s seconds ---" % (time.time() - start_time))
