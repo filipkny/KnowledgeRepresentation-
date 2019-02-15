@@ -159,12 +159,29 @@ def simlify(rules, literals_dict, truth_values, split_choice, neg_literal, rules
 def split(rules, literals_dict, truth_values, split_choice, neg_literal):
     print('------- SPLIT -------')
     condition = False
+
+    # OLD CODE
+    # # find the literal randomly and assign it to true (it has to be non-negative: its quicker)
+    # while condition == False:
+    #     rand_literal = random.choice([*literals_dict.keys()])  # random literal
+    #     if literals_dict[rand_literal][0] == '?':
+    #         condition = True
+    #         choosen_literal = rand_literal
+
+    # NEW CODE
     # find the literal randomly and assign it to true (it has to be non-negative: its quicker)
-    while condition == False:
-        rand_literal = random.choice([*literals_dict.keys()])  # random literal
-        if literals_dict[rand_literal][0] == '?':
+    temp_lst_unknows = []
+    condition = False
+    for temp_literal in [*literals_dict.keys()]:
+        if literals_dict[temp_literal][0] == '?':
+            temp_lst_unknows.append(temp_literal)
             condition = True
-            choosen_literal = rand_literal
+    if condition == True:
+        rand_literal = random.choice(temp_lst_unknows)
+        choosen_literal = rand_literal
+    else:
+        # BACKTRACK
+        print('FATALITY')
 
     # add it to the dict of split_choices; it is equal to all the changes in the literals that is will cause
     split_choice.append(choosen_literal)
