@@ -1,147 +1,174 @@
-import copy
-import math
-from collections import defaultdict
 import random
-import itertools
+import copy
+import time
 
+start_time = time.time()
 
+def print_sudoku(board):
+    print("+" + "---+"*9)
+    for i, row in enumerate(board):
+        print(("|" + " {}   {}   {} |"*3).format(*[x%10 if x != 0 else " " for x in row]))
+        if i % 3 == 2:
+            print("+" + "---+"*9)
+
+#### CREAT DATABASE FOR RULES
 def read_file(file):
     with open(file, 'r') as f:
         lines = f.readlines()
         # Remove '\n', zeroes, last char and make a list out of it
         for i in range(len(lines)):
-            lines[i] = lines[i].rstrip().replace("0","")[0:-1].split(" ")
+            lines[i] = lines[i].rstrip().replace("0", "")[0:-1].split(" ")
     return lines
 
-example = read_file("sudoku-example.txt")
-rules = read_file("sudoku-rules.txt")
 
-# Terminology: '1' = True, '0' = False, '?' = Unknown
-
-# pop the element with 'p' and 'cnf' values
-if rules[0][0]=='p':
-    rules.pop(0)
-
-def rules2dict(rules, str):
+def init_database(rules):
     """
-    Let A,B and C are the list of rules. Then:
-    [[A , B , C] , [D]] = [{A , B , C} , {D}] = {{A or B or C} and {D}}
-    where A has the value of the 'str': A = 'str', str = '0', '1', '?'
+    :return:
+    rules_dict: {0: {-111: '?', -112: '?'}, 1: {-111: '?', -113: '?'}}
+    it has every clause with unic index and the literals with their assignment: '?', '0' or '1'
+
+    literals_dict: {111: ['?', {0, 1, 6, ..., 8991}], , 112: ['?', {0, 1, 9, 10,...}]
+    it has ONLY non-negative literals (111 and -111 are the same). Motivation: find the position of both easy
+    followed by assignment and a set of their position on the rules
     """
-    clauses = {}
-    disjunction = {}
+    # pop the element with 'p' and 'cnf' values
+    if rules[0][0] == 'p':
+        rules.pop(0)
+        rules_dict, disjunction, literals_dict = {}, {}, {}
+    temp_set = set()
+    assign = '?'
     for idx, clause in enumerate(rules):
-        for rule in clause:
-            disjunction[int(rule)] = str #int make them integers
-        clauses[idx] = disjunction
+        for unknowns, literal in enumerate(clause):
+            temp_set = set()
+            literal = int(literal)
+            disjunction[literal] = assign
+            literal = abs(literal)  # get and the negative position
+            try:
+                assign, temp_set = literals_dict[literal]
+                temp_set.add(idx)
+            except:
+                temp_set.add(idx)
+                literals_dict[literal] = [assign, temp_set]
+        # temp = [idx, unknowns+1]
+        # clauses[tuple(temp)] = disjunction
+        rules_dict[idx] = disjunction
         disjunction = dict()
-    return clauses
-
-# we will assing every rule with '?' because we do not know if it is True or False
-rules = rules2dict(rules, '?')
-
-# and every element of the example is True, so we will make a new list 'truth_values',
-# that contains only true values
-truth_values = set()
-for value in example:
-    truth_values.add(int(value[0]))
-
-# # Step 1: Assing 1 and 0 to the elements of rules that are in the truth_values
-def fill_values(rules, truth_values):
-    for idx, clause in rules.items():
-        for statement in truth_values:
-                if statement in [*clause.keys()]:
-                    rules[idx][statement] = '1'
-                elif -statement in [*clause.keys()]:
-                    rules[idx][-statement] = '0'
-    return rules
+    return rules_dict, literals_dict
 
 
-# Step 2: Simplicity fanction
-def simplicity(rules, truth_values):
-    rules_copy = rules.copy()
-    for idx, clause in rules.items():
-        keys = [*clause.keys()]
-        values = [*clause.values()]
-        ones = values.count('1')
-        zeros = values.count('0')
-        unknowns = values.count('?')
-
-        if ones>0:
-            del rules_copy[idx]
-
-        elif len(clause) == 2 and unknowns == 1:
-            if zeros>0:
-                statement = keys[values.index('?')]
-                rules_copy[idx][statement] = '1'
-                truth_values.add(statement)
-                del rules_copy[idx]
-            else:
-                del rules_copy[idx]
-
-        elif len(clause) == 1 and unknowns==1 :
-            statement = keys[0]
-            rules_copy[idx][statement] = '1'
-            truth_values.add(statement)
-            del rules_copy[idx]
-
-        elif len(clause) == zeros-1:        # captures the form (false or false or ... or false or ?) -> ? must be true
-            statement = keys[values.index('?')]
-            rules_copy[idx][statement] = '1'  # rules[idx][statement] = '1'
-            del rules_copy[idx]
-    return rules_copy, truth_values
-
-def split(rules, truth_values):
-    print('----- splitting -------')
-    condition = False
-    while condition == False:
-        rand_idx = random.choice([*rules.keys()])
-        rand_clause = rules[rand_idx]
-        keys = [*rand_clause.keys()]
-        values = [*rand_clause.values()]
-        if '?' in values:
-            statement = keys[values.index('?')]
-            if statement>0:
-                truth_values.add(statement)
-                condition = True
-            else:
-                truth_values.add(-statement)
-                condition = True
+### CREAT DATABASE FOR SUDOKU
+def read_sudoku_DIMACS_file(file):
+    '''
+    :return: {225, 961, 419, -732, -828, ...}
+    Set of ground truth values
+    '''
+    truth_values = set()
+    with open(file, 'r') as f:
+        lines = f.readlines()
+        # Remove '\n', zeroes, last char and make a list out of it
+        for i in range(len(lines)):
+            lines[i] = lines[i].rstrip().replace("0", "")[0:-1].split(" ")
+            truth_values.add(int(lines[i][0]))
     return truth_values
 
-print(len(rules))
 
+### Get the values ###
+rules = read_file("sudoku-rules.txt")
+truth_values = read_sudoku_DIMACS_file("sudoku-example.txt")
+
+rules, literals_dict = init_database(rules)
+
+
+### Step 1: Simplify ###
+def simlify(rules, literals_dict, truth_values):
+    rules_copy = copy.deepcopy(rules)
+    literals_dict_copy = copy.deepcopy(literals_dict)
+    new_truth_values = set()
+    for literal in truth_values:
+        if literal > 0:  # check if the literal is non-negative
+            literals_dict[literal][0] = '1'  # add it to the literals_dict
+        else:  # if literal = -111, add the -literal to the literals_dict (literals_dict has non-negative rules)
+            literals_dict[-literal][0] = '0'
+        positions = literals_dict_copy[abs(literal)][1]  # get its positions of the + and - literal of the rules
+        for i in positions:
+            try:  # try to see if the clause is there
+                clause = rules_copy[i]  # get the clause at position i
+                if literal in [*clause.keys()]:
+                    del rules[i]  # if the literal is True, the hole clause is true, so remove it
+                else:  # if the -literal is in the clause
+                    clause[-literal] = '0'  # because literal = True => -literal = True
+                    keys = [*clause.keys()]  # get the keys in a list
+                    values = [*clause.values()]  # get the values in a list
+                    zeros = values.count('0')  # how many False literal there are at this clause
+                    unknowns = values.count('?')  # how many Unknown literal there are at this clause
+                    if len(clause) == zeros:  # it will make the hole think False
+                        print('FATALITY: BACKTRACK :/')
+                        raise SystemExit
+                    elif unknowns == 1:  # if we have (false or false or... or false or ?) => the ? must be true
+                        statement = keys[values.index('?')]  # the literal who must be true
+                        new_truth_values.add(statement)  ### truth_values HAVE BOTH NEGATIVE AND NON_NEGATIVE literals
+                        if statement > 0:  # but because literals_dict has only non-negative, we have to check
+                            literals_dict[statement][0] = '1'  # add it to the literals_dict
+                            literals_dict[statement][1].remove(i)  # remove position from literals_dict
+                        else:
+                            literals_dict[-statement][0] = '0'  # add it to the literals_dict
+                            literals_dict[-statement][1].remove(i)  # remove position from literals_dict
+                        del rules[i]
+
+                    elif len(clause) == 1 and unknowns == 1:  # unit clause
+                        statement = keys[0]
+                        new_truth_values.add(statement)
+                        if statement > 0:
+                            literals_dict[statement][0] = '1'  # add it to the literals_dict
+                            literals_dict[statement][1].remove(i)  # remove position from literals_dict
+                        else:
+                            literals_dict[-statement][0] = '0'  # add it to the literals_dict
+                            literals_dict[-statement][1].remove(i)  # remove position from literals_dict
+                        del rules[i]
+            except:
+                continue
+    truth_values = truth_values.union(new_truth_values)  # join two sets
+    return rules, literals_dict, truth_values  # , new_truth_values
+
+
+def split(literals_dict, truth_values):
+    print('------- splitting -------')
+
+    condition = False
+    while condition == False:
+        rand_literal = random.choice([*literals_dict.keys()])  # random literal
+        if literals_dict[rand_literal][0] == '?':
+            condition = True
+            literals_dict[rand_literal][0] = '1'
+            truth_values.add(rand_literal)  # rand_literal will always be non-negative
+    return literals_dict, truth_values
+
+
+print(len(rules))
 old_len = len(rules)
-condition = False
-i=1
-while condition == False:
-    rules = fill_values(rules, truth_values)
-    rules, truth_values = simplicity(rules, truth_values)
+new_truth_values = set()
+condit = False
+while condit == False:
+    rules, literals_dict, truth_values = simlify(rules, literals_dict, truth_values)
+    print(len(rules))
     new_len = len(rules)
-    print(new_len)
-    if new_len - old_len == 0:
-        truth_values = split(rules, truth_values)
+    if new_len == 0:
+        print('---------- Solutions ----------')
+        solutions = []
+        i=0
+        for solution in truth_values:
+            if solution>0:
+                solutions.append(solution)
+        solution_grid = []
+        for i in range(0, 81, 9):
+            solution_grid.append(solutions[i:i + 9])
+        print_sudoku(solution_grid)
+        print('Solutions are #', i)
+        condit = True
+    elif old_len - new_len == 0:
+        literals_dict, truth_values = split(literals_dict, truth_values)
     else:
         old_len = new_len
-    if new_len < 100:
-        break
-    # if i==3:
-    #     for idx, clause in rules.items():
-    #         print([*clause.values()])
-    # i+=1
-#
-# for idx, clause in rules.items():
-#     print([*clause.values()])
-# print(len(rules))
-#
-# rules = fill_values(rules, truth_values)
-# rules, truth_values = simplicity(rules, truth_values)
-#
-# print(len(rules))
-# #
-# # for idx, clause in rules.items():
-# #     print([*clause.values()])
-#
-# truth_values = split(rules, truth_values)
 
 
+print("--- %s seconds ---" % (time.time() - start_time))

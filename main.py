@@ -4,13 +4,12 @@ from collections import defaultdict
 import random
 import itertools
 
-
 def read_file(file):
     with open(file, 'r') as f:
         lines = f.readlines()
         # Remove '\n', zeroes, last char and make a list out of it
         for i in range(len(lines)):
-            lines[i] = lines[i].rstrip().replace("0","")[0:-1].split(" ")
+            lines[i] = lines[i].rstrip().replace("literal","")[0:-1].split(" ")
     return lines
 
 example = read_file("sudoku-example.txt")
@@ -185,3 +184,4 @@ class SAT():
 sat = SAT(example, rules)
 sat.join_cnf()
 print(sat.truth_values)
+
