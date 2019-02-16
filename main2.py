@@ -4,7 +4,7 @@ import time
 
 start_time = time.time()
 
-### OLD CODE
+################### OLD CODE #####################
 
 
 def print_sudoku(board):
