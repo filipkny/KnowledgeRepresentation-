@@ -9,6 +9,7 @@ class DB():
         self.truth_values = set()
         self.backtrack = False
         self.saved = False
+        self.reversed = False
 
     def init_database(self):
         """
@@ -166,7 +167,11 @@ class DB():
                 rand_literal, value = self.split()
                 print("Chose random literal {}".format(rand_literal))
 
-                self.update_one_rules_dict(rand_literal)
+                if value is True:
+                    self.update_one_rules_dict(rand_literal)
+                else:
+                    self.update_one_rules_dict(-rand_literal)
+
                 self.check_truth_vals()
 
                 num_clauses_left_new = self.print_clauses_left()
