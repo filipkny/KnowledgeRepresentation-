@@ -2,9 +2,8 @@ import random
 import copy
 import time
 
-# start_time = time.time()
+start_time = time.time()
 
-####################################### FUNCTIONS #######################################
 
 #### READ FILE ####
 def read_file(file):
@@ -62,6 +61,7 @@ def read_sudoku_DIMACS_file(file):
             lines[i] = lines[i].rstrip().replace("0", "")[0:-1].split(" ")
             truth_values.add(int(lines[i][0]))
     return truth_values
+
 
 ### SIMPLIFY THE RULES ###
 def simlify(rules, literals_dict, truth_values, split_choice, neg_literal, rules_before_split,
@@ -126,7 +126,7 @@ def simlify(rules, literals_dict, truth_values, split_choice, neg_literal, rules
         truth_values = truth_values.union(new_truth_values)  # join two sets
     return rules, literals_dict, truth_values  # , new_truth_values
 
-### SPLIT ###
+
 def split(rules, literals_dict, truth_values, split_choice, neg_literal, rules_before_split,
           literals_dict_before_split, truth_values_before_split):
     print('------- SPLIT -------')
@@ -151,19 +151,14 @@ def split(rules, literals_dict, truth_values, split_choice, neg_literal, rules_b
             truth_values.add(rand_literal)  # rand_literal will always be non-negative
 
             break
+
+
     return rules, literals_dict, truth_values, split_choice, neg_literal, rules_before_split, \
            literals_dict_before_split, truth_values_before_split
 
 
-### BACKTRACK ###
 def backtrack(literals_dict, truth_values, split_choice, neg_literal, rules_before_split,
               literals_dict_before_split, truth_values_before_split):
-    '''
-    Check the last literal that we splitted with
-    if we have not tried with '-', try it
-    else find the most resent literal that was not tries with '-'
-        if you do not find it, there is no solution
-    '''
     if neg_literal[-1] == False:  # if we haven't tried to set it to '0'
         # find literal
         literal_choice = split_choice[-1]
@@ -209,7 +204,8 @@ def backtrack(literals_dict, truth_values, split_choice, neg_literal, rules_befo
     return rules, literals_dict, truth_values, neg_literal, split_choice, rules_before_split, \
            literals_dict_before_split, truth_values_before_split
 
-### PRETTY PRINT ###
+
+
 def print_sudoku(board):
     print("+" + "---+" * 9)
     for i, row in enumerate(board):
@@ -219,7 +215,7 @@ def print_sudoku(board):
 
 
 def solution():
-    # print("--- %s seconds ---" % (time.time() - start_time))
+    print("--- %s seconds ---" % (time.time() - start_time))
     print('')
     print('-------------- Solution -------------')
     solutions = []
@@ -231,13 +227,10 @@ def solution():
         solution_grid.append(solutions[i:i + 9])
     print_sudoku(solution_grid)
     return True
-#################################################################
 
 
 
-######## CODE SCRIPT ##########
-
-### SET INITIAL VALUES ###
+### Get the values ###
 rules = read_file("sudoku-rules.txt")
 truth_values = read_sudoku_DIMACS_file("sudoku-example.txt")
 
@@ -250,7 +243,6 @@ old_len = len(rules)
 new_truth_values = set()
 ending = False
 
-### SOLVER ###
 while ending == False:
     rules, literals_dict, truth_values = \
         simlify(rules, literals_dict, truth_values, split_choice, neg_literal, rules_before_split,
