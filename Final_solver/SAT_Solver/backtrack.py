@@ -2,7 +2,7 @@ import copy
 
 def backtrack(rules, literals_dict, truth_values, split_choice, neg_literal,
               rules_before_split, literals_dict_before_split, truth_values_before_split):
-    print('---- BackTrack ----')
+    print('---- BACKTRACK ----')
     exists = False
     for i in range(len(neg_literal)-1, -1, -1):
         if neg_literal[i] == False:
@@ -29,5 +29,6 @@ def backtrack(rules, literals_dict, truth_values, split_choice, neg_literal,
     else:
         # the problem can not be solved
         print('The problem can not be solved')
+        quit()
     return rules, literals_dict, truth_values, split_choice, neg_literal, \
            rules_before_split, literals_dict_before_split, truth_values_before_split
