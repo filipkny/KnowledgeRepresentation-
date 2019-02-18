@@ -3,7 +3,7 @@ import copy
 
 def split(rules, literals_dict, truth_values, split_choice, neg_literal,
            rules_before_split, literals_dict_before_split, truth_values_before_split, which_method=0):
-    print('-------- SPLIT --------')
+    print('---------------- SPLIT --------------')
     # Basic DPLL method (random)
     if which_method == 0:
         temp_lst_unknows = []
@@ -44,7 +44,6 @@ def split(rules, literals_dict, truth_values, split_choice, neg_literal,
                         w += 2 ^ (-len(rules))
                 # give the literal a score
                 temp_lst_unknows[temp_literal] = w
-
         keys = [*temp_lst_unknows.keys()]
         values = [*temp_lst_unknows.values()]
         # now get the literal with the maximum w

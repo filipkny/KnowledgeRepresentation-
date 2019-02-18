@@ -1,16 +1,19 @@
 import read_files, split, simplify, pretty_print, time
 
-sudokus_1000 = read_files.read_sudokus_file("1000_sudokus.txt")
+sudokus = read_files.read_sudokus_file("1000_sudokus.txt")
 
 start_time = time.time()
 
 # Choose heuristic: 0 = Basic DPLL (random), 1 = Jeroslow-Wang method, 2 = Heuristic 2
 which_method = 1
+
+print('============ SAT Solver =============')
 print_heuristic = ['Basic DPLL (random)', 'Jeroslow-Wang method ', 'Heuristic 2']
 print('Heuristic: ', print_heuristic[which_method])
+print('=====================================\n')
 
 for i in range(1, 2):
-    truth_values = sudokus_1000[i]
+    truth_values = sudokus[i]
 
     rules_before_split, literals_dict_before_split, truth_values_before_split = {}, {}, {}
     split_choice, neg_literal = [], []
@@ -18,8 +21,9 @@ for i in range(1, 2):
     rules = read_files.read_DIMACS_file("sudoku-rules.txt")
     rules, literals_dict = read_files.init_database(rules)
 
+    print('======== SAT Problem: {}/{} ========'.format(i, len(sudokus)))
     old_len = len(rules)
-    print('Initial number of clauses:', len(rules))
+    print('Initial number of clauses:', len(rules), '\n')
 
     finish = False
     while finish == False:
