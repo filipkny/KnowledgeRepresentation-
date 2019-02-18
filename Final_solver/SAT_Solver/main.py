@@ -12,7 +12,9 @@ print_heuristic = ['Basic DPLL (random)', 'Jeroslow-Wang method ', 'Heuristic 
 print('Heuristic: ', print_heuristic[which_method])
 print('=====================================\n')
 
-for i in range(1, 2):
+for i in range(1, 3):
+    problem_start_time = time.time()
+
     truth_values = sudokus[i]
 
     rules_before_split, literals_dict_before_split, truth_values_before_split = {}, {}, {}
@@ -38,7 +40,9 @@ for i in range(1, 2):
             # Solution
             pretty_print.solution(truth_values)
             finish = True
-            print("--- %s seconds ---" % (time.time() - start_time))
+            print("\nTime:    %.2f seconds " % (time.time() - problem_start_time))
+            print("Runtime: %.2f seconds " % (time.time() - start_time))
+            print('=====================================\n')
         elif old_len == new_len:
             # Split
             rules, literals_dict, truth_values, split_choice, neg_literal, \
