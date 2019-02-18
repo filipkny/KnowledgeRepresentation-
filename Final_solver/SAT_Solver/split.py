@@ -3,7 +3,7 @@ import copy
 
 def split(rules, literals_dict, truth_values, split_choice, neg_literal,
            rules_before_split, literals_dict_before_split, truth_values_before_split, which_method=0):
-    print('---------------- SPLIT --------------')
+    print('\n\n--------------- SPLIT ---------------')
     # Basic DPLL method (random)
     if which_method == 0:
         temp_lst_unknows = []

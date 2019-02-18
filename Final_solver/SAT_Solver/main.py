@@ -12,7 +12,7 @@ print_heuristic = ['Basic DPLL (random)', 'Jeroslow-Wang method ', 'Heuristic 
 print('Heuristic: ', print_heuristic[which_method])
 print('=====================================\n')
 
-for i in range(1, 3):
+for i in range(1, 2):
     problem_start_time = time.time()
 
     truth_values = sudokus[i]
@@ -25,7 +25,7 @@ for i in range(1, 3):
 
     print('======== SAT Problem: {}/{} ========'.format(i, len(sudokus)))
     old_len = len(rules)
-    print('Initial number of clauses:', len(rules), '\n')
+    print('   Initial number of rules:', len(rules), '\n')
 
     finish = False
     while finish == False:
@@ -34,8 +34,10 @@ for i in range(1, 3):
         rules_before_split, literals_dict_before_split, truth_values_before_split = \
             simplify.simplify(rules, literals_dict, truth_values, split_choice, neg_literal,
                         rules_before_split, literals_dict_before_split, truth_values_before_split)
+
         new_len = len(rules)
-        print(new_len)
+        print('   #clauses: after simplify:', new_len, end='\r')
+
         if new_len == 0 :
             # Solution
             pretty_print.solution(truth_values)

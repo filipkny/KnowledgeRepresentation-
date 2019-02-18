@@ -8,7 +8,7 @@ def print_sudoku(board):
 
 
 def solution(truth_values):
-    print('-------------- Solution -------------')
+    print('\n\n------------- SOLUTION --------------')
     solutions = []
     for solution in truth_values:
         if solution > 0:
