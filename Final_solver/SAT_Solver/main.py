@@ -5,7 +5,7 @@ sudokus = read_files.read_sudokus_file("1000_sudokus.txt")
 start_time = time.time()
 
 # Choose heuristic: 0 = Basic DPLL (random), 1 = Jeroslow-Wang method, 2 = Heuristic 2
-which_method = 1
+which_method = 0
 
 print('============ SAT Solver =============')
 print_heuristic = ['Basic DPLL (random)', 'Jeroslow-Wang method ', 'Heuristic 2']
