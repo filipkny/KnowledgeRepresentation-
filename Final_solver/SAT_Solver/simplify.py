@@ -1,7 +1,7 @@
 import backtrack
 
 def simplify(rules, literals_dict, truth_values, split_choice, neg_literal,
-             rules_before_split, literals_dict_before_split, truth_values_before_split):
+             rules_before_split, literals_dict_before_split, truth_values_before_split, count_backtracks):
     new_truth_values = set()
     back_track = False
     for literal in truth_values:
@@ -28,6 +28,8 @@ def simplify(rules, literals_dict, truth_values, split_choice, neg_literal,
                             backtrack.backtrack(rules, literals_dict, truth_values, split_choice, neg_literal,
                             rules_before_split, literals_dict_before_split, truth_values_before_split)
                         back_track = True
+                        # update backtrack counter
+                        count_backtracks += 1
                         break
 
                     elif len(clause) == 1 and unknowns == 1:  # unit clause
@@ -44,7 +46,10 @@ def simplify(rules, literals_dict, truth_values, split_choice, neg_literal,
                             literals_dict[-statement][0] = '0'
         if back_track == True:
             return rules, literals_dict, truth_values, split_choice, neg_literal,\
-                   rules_before_split, literals_dict_before_split, truth_values_before_split
-    truth_values = truth_values.union(new_truth_values)
+                   rules_before_split, literals_dict_before_split, truth_values_before_split, count_backtracks
+    if truth_values != {}:
+        truth_values = truth_values.union(new_truth_values)
+    else:
+        truth_values = new_truth_values
     return rules, literals_dict, truth_values, split_choice, neg_literal,\
-           rules_before_split, literals_dict_before_split, truth_values_before_split
+           rules_before_split, literals_dict_before_split, truth_values_before_split, count_backtracks
