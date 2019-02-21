@@ -69,7 +69,7 @@ def split(rules, literals_dict, truth_values, split_choice, neg_literal,
         return rules, literals_dict, truth_values, split_choice, neg_literal, \
                rules_before_split, literals_dict_before_split, truth_values_before_split
 
-    # Heuristic 2
+    # MOMs method
     elif which_method == 2:
         temp_lst_unknows = []
         for temp_literal in [*literals_dict.keys()]:
@@ -99,17 +99,13 @@ def split(rules, literals_dict, truth_values, split_choice, neg_literal,
 def calc_fstar(literals_dict, rules, literal):
     if literals_dict[abs(literal)][0] != '?':
         return  -1
-
     clause_ids = literals_dict[abs(literal)][1]
-
     counts = defaultdict(lambda: 0)
     for clause_id in clause_ids:
         if rules.get(clause_id) is not None:
             clause = rules[clause_id]
             if literal in clause:
                 counts[len(clause)] += 1
-
-
     return counts[min([*clause.keys()])]
 
 def get_max_f_star(literals_dict, rules, k = 0.1):
@@ -121,5 +117,4 @@ def get_max_f_star(literals_dict, rules, k = 0.1):
         if f_star > maximum:
             maximum = f_star
             max_lit = literal
-
     return max_lit

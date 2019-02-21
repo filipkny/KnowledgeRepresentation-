@@ -1,17 +1,16 @@
 import read_files, split, simplify, pretty_print, check_sudoku
 import time, xlsxwriter
 
-file = 'damnhard.sdk.txt'
-thousand_sudokus = '1000_sudokus.txt'
-sudokus = read_files.read_sudokus_file(file )
+file = 'damnhard.sdk.txt' #'1000_sudokus.txt'
+sudokus = read_files.read_sudokus_file(file)
 
 start_time = time.time()
 
-# Choose heuristic: 0 = Basic DPLL (random), 1 = Jeroslow-Wang method, 2 = Heuristic 2
-which_method = 2
+# Choose heuristic: 0 = Basic DPLL (random), 1 = Jeroslow-Wang method, 2 = MOMs method
+which_method = 1
 
 print('============ SAT Solver =============')
-print_heuristic = ['Basic DPLL (random)', 'Jeroslow-Wang method ', 'Heuristic 2']
+print_heuristic = ['Basic DPLL (random)', 'Jeroslow-Wang method ', 'MOMs method']
 print('    Heuristic: ', print_heuristic[which_method])
 print('=====================================\n')
 
@@ -42,7 +41,7 @@ for sdk in range(1, len(sudokus)+1):
     rules = read_files.read_DIMACS_file("sudoku-rules.txt")
     rules, literals_dict = read_files.init_database(rules)
 
-    print('======== SAT Problem: {}/{} ========'.format(sdk, len(sudokus)))
+    print('========= SAT Problem: {}/{} ========='.format(sdk, len(sudokus)))
     old_len = len(rules)
     print('   Initial number of rules:', len(rules), '\n')
 
