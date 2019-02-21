@@ -14,6 +14,7 @@ def simplify(rules, literals_dict, truth_values, split_choice, neg_literal,
                         literals_dict[literal][0] = '1'
                     else:
                         literals_dict[-literal][0] = '0'
+
                     del rules[i]
                 else:
                     clause[-literal] = '0'
