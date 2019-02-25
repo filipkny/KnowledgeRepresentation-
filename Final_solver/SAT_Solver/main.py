@@ -5,7 +5,7 @@ import time, xlsxwriter
 easy = "1000_sudokus.txt"
 hard = 'damnhard.sdk.txt' #'1000_sudokus.txt'
 sixteens = "16x16.txt"
-sudokus = read_files.read_sudokus_file(sixteens)
+sudokus = read_files.read_sudokus_file(hard)
 start_time = time.time()
 
 # Choose heuristic: 0 = Basic DPLL (random), 1 = Jeroslow-Wang method, 2 = MOMs method
@@ -28,9 +28,8 @@ for cell in range(6):
 for sdk in range(1, len(sudokus)+1):
     problem_start_time = time.time()
 
-    #truth_values = sudokus[sdk] # {} when we submit
-    truth_values = {119, 128, 147, 156, 175, 217, 248, 279, 335, 369, 415, 468, 474, 523, 544, 657, 682, 714, 758,
-                    776, 836, 849, 891, 966, 985}
+    truth_values = sudokus[sdk] # {} when we submit
+
     # List for data analysis EXCEL
     # [#unit_clauses, %of reduction from first simplify, #splits, #backtrackings, #time]
     results = [sdk ,0, 100., 0, 0, 0, 0]
@@ -55,11 +54,12 @@ for sdk in range(1, len(sudokus)+1):
 
     finish = False
     while finish == False:
+        bk = False
         # Simplify
         rules, literals_dict, truth_values, split_choice, neg_literal, \
-        rules_before_split, literals_dict_before_split, truth_values_before_split, results[4] = \
+        rules_before_split, literals_dict_before_split, truth_values_before_split, results[4], bk = \
             simplify.simplify(rules, literals_dict, truth_values, split_choice, neg_literal,
-                        rules_before_split, literals_dict_before_split, truth_values_before_split, results[4])
+                        rules_before_split, literals_dict_before_split, truth_values_before_split, results[4], bk)
         new_len = len(rules)
         print('    #clauses: after simplify:', new_len, end='\r')
         if new_len == 0 :
@@ -91,7 +91,7 @@ for sdk in range(1, len(sudokus)+1):
             for i in range(len(results)):
                 worksheet.write(sdk, i, results[i])
 
-        elif old_len == new_len:
+        elif old_len == new_len and bk == False:
             # update #splits
             results[3] = results[3] + 1
 

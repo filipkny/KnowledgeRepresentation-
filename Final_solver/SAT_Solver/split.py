@@ -6,7 +6,7 @@ from collections import defaultdict
 
 def split(rules, literals_dict, truth_values, split_choice, neg_literal,
            rules_before_split, literals_dict_before_split, truth_values_before_split, which_method=2, k = 0.1):
-    # print('\n\n--------------- SPLIT ---------------')
+    print('\n\n--------------- SPLIT ---------------')
     # Basic DPLL method (random)
     if which_method == 0:
         temp_lst_unknows = []

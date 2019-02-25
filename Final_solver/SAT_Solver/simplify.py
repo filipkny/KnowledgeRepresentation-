@@ -1,21 +1,22 @@
-import backtrack
+import backtrack, copy
 
 def simplify(rules, literals_dict, truth_values, split_choice, neg_literal,
-             rules_before_split, literals_dict_before_split, truth_values_before_split, count_backtracks):
+             rules_before_split, literals_dict_before_split, truth_values_before_split, count_backtracks, back_track):
     new_truth_values = set()
     back_track = False
+    rules_copy = copy.deepcopy(rules)
     for literal in truth_values:
         positions = literals_dict[abs(literal)][1]
         for i in positions:
-            if rules.get(i) is not None:
-                clause = rules[i]
+            if rules_copy.get(i) is not None:
+                clause = rules_copy[i]
                 if literal in [*clause.keys()]:
                     if literal > 0:
                         literals_dict[literal][0] = '1'
                     else:
                         literals_dict[-literal][0] = '0'
-
-                    del rules[i]
+                    if rules.get(i) is not None:
+                        del rules[i]
                 else:
                     clause[-literal] = '0'
                     keys = [*clause.keys()]
@@ -45,12 +46,15 @@ def simplify(rules, literals_dict, truth_values, split_choice, neg_literal,
                             literals_dict[statement][0] = '1'
                         else:
                             literals_dict[-statement][0] = '0'
+                        if rules.get(i) is not None:
+                            del rules[i]
+
         if back_track == True:
             return rules, literals_dict, truth_values, split_choice, neg_literal,\
-                   rules_before_split, literals_dict_before_split, truth_values_before_split, count_backtracks
+                   rules_before_split, literals_dict_before_split, truth_values_before_split, count_backtracks, back_track
     if truth_values != {}:
         truth_values = truth_values.union(new_truth_values)
     else:
         truth_values = new_truth_values
     return rules, literals_dict, truth_values, split_choice, neg_literal,\
-           rules_before_split, literals_dict_before_split, truth_values_before_split, count_backtracks
+           rules_before_split, literals_dict_before_split, truth_values_before_split, count_backtracks, back_track
