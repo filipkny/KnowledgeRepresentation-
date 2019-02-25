@@ -27,6 +27,7 @@ def init_database(rules):
     for idx, clause in enumerate(rules):
         for unknowns, literal in enumerate(clause):
             temp_set = set()
+            print(literal)
             literal = int(literal)
             disjunction[literal] = assign
             literal = abs(literal)  # get and the negative position

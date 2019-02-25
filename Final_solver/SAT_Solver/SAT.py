@@ -70,7 +70,14 @@ def solve(heuristic, file):
             print('=====================================\n')
 
             results[6] = float(clauses)/float(variables)
+            output_file = file.replace(".txt","") + ".out"
 
+            with open(output_file, "w") as f:
+                for truth_value in truth_values:
+                    if truth_value > 0:
+                        f.write(str(truth_value) + " 0\n")
+
+            print("Wrote output to {}".format(output_file))
         elif old_len == new_len:
             # update #splits
             results[3] = results[3] + 1
