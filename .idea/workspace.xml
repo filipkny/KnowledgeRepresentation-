@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="847f987a-1021-4cc5-b682-36b5f8a99b3c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Final_solver/SAT_Solver/SAT.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Final_solver/SAT_Solver/SAT.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Final_solver/SAT_Solver/ass_example.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.~lock.jersolaw_3runs_easy.xlsx#" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Final_solver/SAT_Solver/.~lock.1000_sudokus-Jeroslow-Wang method 1551018701.4492168run=1.xlsx#" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Final_solver/SAT_Solver/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Final_solver/SAT_Solver/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,7 +23,7 @@
     <SUITE FILE_PATH="coverage/KnowledgeRepresentation_$main3.coverage" NAME="main3 Coverage Results" MODIFIED="1550322259108" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/KnowledgeRepresentation_$notes2.coverage" NAME="notes2 Coverage Results" MODIFIED="1550173516298" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/KnowledgeRepresentation_$main.coverage" NAME="main Coverage Results" MODIFIED="1550322812751" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/sudoku$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1551115687414" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Final_solver/SAT_Solver" />
+    <SUITE FILE_PATH="coverage/sudoku$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1551117306991" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Final_solver/SAT_Solver" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
@@ -43,14 +44,62 @@
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="18" column="115" selection-start-line="18" selection-start-column="115" selection-end-line="18" selection-end-column="115" />
+            <state>
+              <caret selection-end-line="3" />
               <folding>
                 <element signature="e#0#62#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/SAT.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="367">
+              <caret line="90" column="17" selection-start-line="90" selection-start-column="17" selection-end-line="90" selection-end-column="17" />
+              <folding>
+                <element signature="e#0#62#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/SAT.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="15">
+              <caret line="1" column="17" selection-start-line="1" selection-start-column="17" selection-end-line="1" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/sudoku-example.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret selection-end-line="18" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/ass_example.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="178605">
+              <caret line="11907" column="11" selection-start-line="11907" selection-start-column="11" selection-end-line="11907" selection-end-column="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/sudoku-rules.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="270">
+              <caret line="18" column="11" selection-end-line="11989" />
             </state>
           </provider>
         </entry>
@@ -63,24 +112,6 @@
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/backtrack.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="2" selection-start-line="5" selection-start-column="2" selection-end-line="5" selection-end-column="2" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/simplify.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="16" selection-start-column="16" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -116,6 +147,7 @@
       <find>11</find>
       <find>result</find>
       <find>hard</find>
+      <find>which</find>
     </findStrings>
     <replaceStrings>
       <replace>liter</replace>
@@ -141,6 +173,10 @@
         <option value="$PROJECT_DIR$/Final_solver/SAT_Solver/backtrack.py" />
         <option value="$PROJECT_DIR$/Final_solver/SAT_Solver/split.py" />
         <option value="$PROJECT_DIR$/Final_solver/SAT_Solver/main.py" />
+        <option value="$PROJECT_DIR$/Final_solver/SAT_Solver/sudoku-rules.txt" />
+        <option value="$PROJECT_DIR$/Final_solver/SAT_Solver/ass_example" />
+        <option value="$PROJECT_DIR$/Final_solver/SAT_Solver/SAT.py" />
+        <option value="$PROJECT_DIR$/Final_solver/SAT_Solver/SAT.sh" />
       </list>
     </option>
   </component>
@@ -155,7 +191,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -178,6 +213,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -186,6 +222,11 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Final_solver/SAT_Solver" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -342,7 +383,8 @@
       <workItem from="1550772930057" duration="9509000" />
       <workItem from="1550932459620" duration="16254000" />
       <workItem from="1551042071990" duration="598000" />
-      <workItem from="1551114897365" duration="797000" />
+      <workItem from="1551114897365" duration="2592000" />
+      <workItem from="1551117502471" duration="696000" />
     </task>
     <task id="LOCAL-00001" summary="main2 added">
       <created>1550059660917</created>
@@ -355,7 +397,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="42119000" />
+    <option name="totallyTimeSpent" value="44610000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -368,8 +410,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="67" y="25" width="1853" height="1055" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49879518" visible="true" weight="0.352518" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49879518" visible="true" weight="0.35694522" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -382,13 +425,13 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.4980631" visible="true" weight="0.41792658" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" sideWeight="0.5960155" visible="true" weight="0.41792658" />
       <window_info anchor="bottom" id="Python Console" order="11" weight="0.32891566" />
-      <window_info active="true" anchor="bottom" id="Run" order="12" sideWeight="0.5019369" side_tool="true" visible="true" weight="0.41792658" />
+      <window_info anchor="bottom" id="Run" order="12" sideWeight="0.40398452" side_tool="true" weight="0.41792658" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="SciView" order="3" />
+      <window_info anchor="right" id="SciView" order="3" weight="0.32982844" />
       <window_info anchor="right" id="Database" order="4" />
     </layout>
     <layout-to-restore>
@@ -444,29 +487,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/.~lock.damnhard-Basic DPLL (random)1550936994.311179.xlsx#" />
-    <entry file="file://$PROJECT_DIR$/General.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="17" column="8" selection-start-line="17" selection-start-column="8" selection-end-line="17" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/read_files.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/split.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1035">
-          <caret line="72" column="27" selection-start-line="72" selection-start-column="27" selection-end-line="72" selection-end-column="27" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/backtrack.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -481,6 +501,70 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/16x16.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/1000_sudokus.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/General.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="17" column="8" selection-start-line="17" selection-start-column="8" selection-end-line="17" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/read_files.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="3" />
+          <folding>
+            <element signature="e#0#62#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/sudoku-example.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/ass_example.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="178605">
+          <caret line="11907" column="11" selection-start-line="11907" selection-start-column="11" selection-end-line="11907" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/sudoku-rules.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="11" selection-end-line="11989" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/split.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1035">
+          <caret line="72" column="27" selection-start-line="72" selection-start-column="27" selection-end-line="72" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/check_sudoku.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="495">
@@ -488,13 +572,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/main.py">
+    <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/SAT.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="18" column="115" selection-start-line="18" selection-start-column="115" selection-end-line="18" selection-end-column="115" />
+        <state relative-caret-position="367">
+          <caret line="90" column="17" selection-start-line="90" selection-start-column="17" selection-end-line="90" selection-end-column="17" />
           <folding>
             <element signature="e#0#62#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/SAT.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="17" selection-start-line="1" selection-start-column="17" selection-end-line="1" selection-end-column="17" />
         </state>
       </provider>
     </entry>

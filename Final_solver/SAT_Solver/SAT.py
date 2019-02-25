@@ -1,39 +1,26 @@
 import read_files, split, simplify, pretty_print, check_sudoku
-import time, xlsxwriter
+import time, sys
 
 
-easy = "1000_sudokus.txt"
-hard = 'damnhard.sdk.txt' #'1000_sudokus.txt'
-sixteens = "16x16.txt"
-sudokus = read_files.read_sudokus_file(sixteens)
-start_time = time.time()
-
-# Choose heuristic: 0 = Basic DPLL (random), 1 = Jeroslow-Wang method, 2 = MOMs method
-which_method = 0
-
-print('============ SAT Solver =============')
-print_heuristic = ['Basic DPLL (random)', 'Jeroslow-Wang method ', 'MOMs method']
-print('    Heuristic: ', print_heuristic[which_method])
-print('=====================================\n')
-
-# csv output
-workbook_file = str(easy.split('.')[0] + '-' + print_heuristic[which_method] + str(time.time()) + "run={}".format(1) + '.xlsx')
-workbook = xlsxwriter.Workbook(workbook_file)
-worksheet = workbook.add_worksheet()
-head_lst = ['No. Sudoku', 'Unit Clauses', 'First simplify reduction (%)', 'Splits', 'Backtrackings', 'Time (sec)']
-for cell in range(6):
-    worksheet.write(0, cell, head_lst[cell])
-
-
-for sdk in range(1, len(sudokus)+1):
-    problem_start_time = time.time()
+def solve(heuristic, file):
+    start = time.time()
 
     #truth_values = sudokus[sdk] # {} when we submit
-    truth_values = {119, 128, 147, 156, 175, 217, 248, 279, 335, 369, 415, 468, 474, 523, 544, 657, 682, 714, 758,
-                    776, 836, 849, 891, 966, 985}
+    rules = read_files.read_DIMACS_file(file)
+    truth_values = set()
+    to_remove = []
+    for rule in rules:
+        if len(rule) == 1:
+            truth_values.add(int(rule[0]))
+
+    for rule in to_remove:
+        rules.remove(rule)
+
+    which_method = int(heuristic)
+
     # List for data analysis EXCEL
     # [#unit_clauses, %of reduction from first simplify, #splits, #backtrackings, #time]
-    results = [sdk ,0, 100., 0, 0, 0, 0]
+    results = [1 ,0, 100., 0, 0, 0, 0]
     split_count = 0
     # Position 0: get the #unit_clauses
     results[1] = len(truth_values)
@@ -41,12 +28,10 @@ for sdk in range(1, len(sudokus)+1):
     rules_before_split, literals_dict_before_split, truth_values_before_split= {}, {}, {}
     split_choice, neg_literal = [], []
 
-    rules = read_files.read_DIMACS_file("sudoku-rules.txt")
     rules, literals_dict = read_files.init_database(rules)
 
     clauses = len(rules)
     variables = len(truth_values)
-    print('========= SAT Problem: {}/{} ========='.format(sdk, len(sudokus)))
     old_len = len(rules)
     print('   Initial number of rules:', len(rules), '\n')
 
@@ -75,9 +60,8 @@ for sdk in range(1, len(sudokus)+1):
             finish = True
 
             # get the solution time
-            results[5] = float("{0:.2f}".format(time.time() - problem_start_time))
-            print("\nTime:    %.2f seconds " % (time.time() - problem_start_time))
-            print("Runtime: %.2f seconds " % (time.time() - start_time))
+            results[5] = float("{0:.2f}".format(time.time() - start))
+            print("Runtime: %.2f seconds " % (time.time() - start))
             print("Initial #unit clauses :",results[1] )
             print("Reduction from first simplify: ", results[2], '%')
             print("#splits :",results[3] )
@@ -86,10 +70,6 @@ for sdk in range(1, len(sudokus)+1):
             print('=====================================\n')
 
             results[6] = float(clauses)/float(variables)
-            quit()
-            # CSV OUTPUT
-            for i in range(len(results)):
-                worksheet.write(sdk, i, results[i])
 
         elif old_len == new_len:
             # update #splits
@@ -106,4 +86,8 @@ for sdk in range(1, len(sudokus)+1):
                   rules_before_split, literals_dict_before_split, truth_values_before_split, which_method)
 
         old_len = new_len
-workbook.close()
+
+heuristic = sys.argv[1][2]
+file = sys.argv[2]
+print(heuristic,file)
+solve(heuristic,file)
