@@ -9,7 +9,7 @@ sudokus = read_files.read_sudokus_file(hard)
 start_time = time.time()
 
 # Choose heuristic: 0 = Basic DPLL (random), 1 = Jeroslow-Wang method, 2 = MOMs method
-which_method = 0
+which_method = 2
 
 print('============ SAT Solver =============')
 print_heuristic = ['Basic DPLL (random)', 'Jeroslow-Wang method ', 'MOMs method']
@@ -28,10 +28,10 @@ for cell in range(6):
 for sdk in range(1, len(sudokus)+1):
     problem_start_time = time.time()
 
-    truth_values = sudokus[sdk] # {} when we submit
+    truth_values = sudokus[sdk] # {} when we submit, sudokus[sdk]
 
     # List for data analysis EXCEL
-    # [#unit_clauses, %of reduction from first simplify, #splits, #backtrackings, #time]
+    # [#unit_clauses, %of reduction fro first simplify, #splits, #backtrackings, #time]
     results = [sdk ,0, 100., 0, 0, 0, 0]
     split_count = 0
     # Position 0: get the #unit_clauses
