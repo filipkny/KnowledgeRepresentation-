@@ -6,7 +6,7 @@ from collections import defaultdict
 
 def split(rules, literals_dict, truth_values, split_choice, neg_literal,
            rules_before_split, literals_dict_before_split, truth_values_before_split, which_method=2, k = 0.1):
-    print('\n\n--------------- SPLIT ---------------')
+    # print('\n\n--------------- SPLIT ---------------')
     # Basic DPLL method (random)
     if which_method == 0:
         temp_lst_unknows = []
@@ -112,9 +112,13 @@ def get_max_f_star(literals_dict, rules, k = 0.1):
     maximum = -1
     max_lit = None
     for literal, clause_ids in literals_dict.items():
-        temp = calc_fstar(literals_dict, rules, literal) + calc_fstar(literals_dict, rules, -literal)
-        f_star = temp*(2**k) + temp
+        a = calc_fstar(literals_dict, rules, literal)
+        b = calc_fstar(literals_dict, rules, -literal)
+        temp =  a + b
+        temp2 = a*b
+        f_star = temp*(2**k) + temp2
         if f_star > maximum:
             maximum = f_star
             max_lit = literal
+
     return max_lit

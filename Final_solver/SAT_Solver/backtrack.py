@@ -2,7 +2,7 @@ import copy
 
 def backtrack(rules, literals_dict, truth_values, split_choice, neg_literal,
               rules_before_split, literals_dict_before_split, truth_values_before_split):
-    print('\n\n------------- BACKTRACK -------------')
+    # print('\n\n------------- BACKTRACK -------------')
     exists = False
     for i in range(len(neg_literal)-1, -1, -1):
         if neg_literal[i] == False:
