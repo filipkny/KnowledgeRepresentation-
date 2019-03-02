@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="847f987a-1021-4cc5-b682-36b5f8a99b3c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/FINAL_SAT/SAT/SAT.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experimental_solver/SAT_Solver/.~lock.jeroslaw_allsizes_hard.xlsx#" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experimental_solver/SAT_Solver/.~lock.test_new_mom_hard.xlsx#" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/FINAL_SAT/SAT/split.py" beforeDir="false" afterPath="$PROJECT_DIR$/FINAL_SAT/SAT/split.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experimental_solver/SAT_Solver/SAT.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experimental_solver/SAT_Solver/SAT.sh" beforeDir="false" afterPath="$PROJECT_DIR$/FINAL_SAT/SAT/SAT.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experimental_solver/SAT_Solver/check_sudoku.py" beforeDir="false" afterPath="$PROJECT_DIR$/FINAL_SAT/SAT/check_sudoku.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,26 +28,32 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/FINAL_SAT/SAT/main.py">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/FINAL_SAT/SAT/SAT.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
-              <caret line="68" column="40" selection-start-line="68" selection-start-column="40" selection-end-line="68" selection-end-column="40" />
+            <state relative-caret-position="153">
+              <caret line="60" column="37" selection-start-line="60" selection-start-column="37" selection-end-line="60" selection-end-column="37" />
               <folding>
-                <element signature="e#0#13#0" expanded="true" />
+                <element signature="e#0#62#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/FINAL_SAT/SAT/split.py">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/FINAL_SAT/SAT/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="452">
-              <caret line="116" column="35" selection-start-line="116" selection-start-column="35" selection-end-line="116" selection-end-column="35" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="40">
+              <caret line="4" selection-start-line="4" selection-end-line="5" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/FINAL_SAT/SAT/SAT.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="20">
+              <caret line="1" column="20" lean-forward="true" selection-start-line="1" selection-start-column="20" selection-end-line="1" selection-end-column="20" />
             </state>
           </provider>
         </entry>
@@ -106,6 +113,8 @@
         <option value="$PROJECT_DIR$/Final_solver/SAT_Solver/main.py" />
         <option value="$PROJECT_DIR$/FINAL_SAT/SAT/main.py" />
         <option value="$PROJECT_DIR$/FINAL_SAT/SAT/split.py" />
+        <option value="$PROJECT_DIR$/Experimental_solver/SAT_Solver/SAT.py" />
+        <option value="$PROJECT_DIR$/FINAL_SAT/SAT/SAT.py" />
       </list>
     </option>
   </component>
@@ -149,17 +158,6 @@
               <item name="FINAL_SAT" type="462c0819:PsiDirectoryNode" />
               <item name="SAT" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="sudoku" type="b2602c69:ProjectViewProjectNode" />
-              <item name="sudoku" type="462c0819:PsiDirectoryNode" />
-              <item name="Final_solver" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="sudoku" type="b2602c69:ProjectViewProjectNode" />
-              <item name="sudoku" type="462c0819:PsiDirectoryNode" />
-              <item name="Final_solver" type="462c0819:PsiDirectoryNode" />
-              <item name="SAT_Solver" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -176,6 +174,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/FINAL_SAT/SAT" />
       <recent name="$PROJECT_DIR$/Final_solver/SAT_Solver" />
     </key>
   </component>
@@ -340,6 +339,7 @@
       <workItem from="1551370842327" duration="5385000" />
       <workItem from="1551439784819" duration="13654000" />
       <workItem from="1551521266972" duration="6209000" />
+      <workItem from="1551551273510" duration="786000" />
     </task>
     <task id="LOCAL-00001" summary="main2 added">
       <created>1550059660917</created>
@@ -352,7 +352,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="79311000" />
+    <option name="totallyTimeSpent" value="80097000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -366,7 +366,7 @@
   <component name="ToolWindowManager">
     <frame x="67" y="25" width="1853" height="1055" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49879518" visible="true" weight="0.42114002" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49879518" visible="true" weight="0.42612064" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -379,7 +379,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.43608192" visible="true" weight="0.21814255" />
+      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.43608192" visible="true" weight="0.47948164" />
       <window_info anchor="bottom" id="Python Console" order="11" weight="0.32891566" />
       <window_info anchor="bottom" id="Run" order="12" sideWeight="0.5639181" side_tool="true" weight="0.49460045" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -468,22 +468,27 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Final_solver/SAT_Solver/main.py" />
-    <entry file="file://$PROJECT_DIR$/FINAL_SAT/SAT/main.py">
+    <entry file="file://$PROJECT_DIR$/FINAL_SAT/SAT/split.py" />
+    <entry file="file://$PROJECT_DIR$/FINAL_SAT/SAT/SAT.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="68" column="40" selection-start-line="68" selection-start-column="40" selection-end-line="68" selection-end-column="40" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="20">
+          <caret line="1" column="20" lean-forward="true" selection-start-line="1" selection-start-column="20" selection-end-line="1" selection-end-column="20" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/FINAL_SAT/SAT/split.py">
+    <entry file="file://$PROJECT_DIR$/FINAL_SAT/SAT/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="452">
-          <caret line="116" column="35" selection-start-line="116" selection-start-column="35" selection-end-line="116" selection-end-column="35" />
+        <state relative-caret-position="40">
+          <caret line="4" selection-start-line="4" selection-end-line="5" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/FINAL_SAT/SAT/SAT.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="60" column="37" selection-start-line="60" selection-start-column="37" selection-end-line="60" selection-end-column="37" />
           <folding>
-            <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#0#62#0" expanded="true" />
           </folding>
         </state>
       </provider>
