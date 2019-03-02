@@ -21,7 +21,7 @@ def solve(heuristic, file):
     split_count = 0
     back_track_count = 0
     problem_start_time = time.time()
-    rules = read_files.read_DIMACS_file("sdks/sudoku-rules.txt")
+    rules = read_files.read_DIMACS_file(file)
     rules, literals_dict, truth_values = read_files.init_database(rules)
     results[1] = len(truth_values)
     old_clauses_count = len(rules)
