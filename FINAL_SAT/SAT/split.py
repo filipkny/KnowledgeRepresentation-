@@ -118,4 +118,5 @@ def get_max_f_star(literals_dict, rules, k = 1.5):
         if f_star > maximum:
             maximum = f_star
             max_lit = literal
+
     return max_lit
